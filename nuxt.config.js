@@ -40,6 +40,6 @@ export default {
 module.exports = {
   loading: {
     color: 'blue',
-    height: '5px'
+    height: '20px'
   }
 }

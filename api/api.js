@@ -12,3 +12,9 @@ export const getAdminInfo = () => {
 export const getCategories = () => {
   return http.requestGet(baseUrl + '/portal/article/categories');
 }
+export const getLoop = () => {
+  return http.requestGet(baseUrl + '/portal/web_site_info/loop');
+}
+export const getTopArticle = () => {
+  return http.requestGet(baseUrl + '/portal/article/top');
+}

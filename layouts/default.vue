@@ -28,10 +28,10 @@
       <div class="copy-right-box">
         <p>
           Copyright ©
-          <a href="http://localhost:8082/swagger-ui.html" target="_blank">
+          <a href="https://github.com/zh-Spike" target="_blank">
             zh-spike
           </a>
-          本网站用❤来发电
+          (2020--?)本网站用❤来发电
         </p>
       </div>
       <div>
