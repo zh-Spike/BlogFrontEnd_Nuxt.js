@@ -1,6 +1,6 @@
 <template>
   <div class="index-page-box">
-    首页
+    friendLink
   </div>
 </template>
 

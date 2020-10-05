@@ -9,9 +9,15 @@
         <span><i class="sob_blog sobmembers-add"></i> 注册</span>
       </div>
       <div class="navigation-box float-right">
-        <span><i class="sob_blog sobhome"></i> 首页</span>
-        <span><i class="sob_blog sobabout_line"></i> 关于</span>
-        <span><i class="sob_blog soblink"></i> 友链</span>
+        <NuxtLink to="/">
+          <span><i class="sob_blog sobhome"></i> 首页</span>
+        </NuxtLink>
+        <NuxtLink to="/about">
+          <span><i class="sob_blog sobabout_line"></i> 关于</span>
+        </NuxtLink>
+        <NuxtLink to="/link">
+          <span><i class="sob_blog soblink"></i> 友链</span>
+        </NuxtLink>
       </div>
       <div class="user-info-box float-right" style="display: none">
         用户信息
@@ -25,7 +31,7 @@
           <a href="http://localhost:8082/swagger-ui.html" target="_blank">
             zh-spike
           </a>
-          本网站用❤驱动
+          本网站用❤来发电
         </p>
       </div>
       <div>
