@@ -20,7 +20,14 @@ export default {
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
-    '@/plugins/element-ui'
+    {
+      src: '@/plugins/element-ui',
+      ssr: true
+    },
+    {
+      src: '@/plugins/word-cloud',
+      ssr: false
+    },
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -30,7 +37,16 @@ export default {
   buildModules: [],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
-  modules: [],
+  modules: [
+    '@nuxtjs/axios',
+    '@nuxtjs/proxy'
+  ],
+
+  proxy: {
+    '/portal': {
+      target: 'http://localhost:8082',
+    }
+  },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
@@ -39,7 +55,7 @@ export default {
 }
 module.exports = {
   loading: {
-    color: 'blue',
-    height: '20px'
+    color: 'hotpink',
+    height: '10px'
   }
 }

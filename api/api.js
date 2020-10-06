@@ -1,4 +1,5 @@
 import http from "@/api/http";
+import el from "element-ui/src/locale/lang/el";
 
 const baseUrl = 'http://localhost:8082'
 
@@ -17,4 +18,16 @@ export const getLoop = () => {
 }
 export const getTopArticle = () => {
   return http.requestGet(baseUrl + '/portal/article/top');
+}
+export const getLabels = (count) => {
+  return http.requestGet('/portal/article/label/' + count);
+}
+export const getArticles = (page, size) => {
+  if (process.client) {
+    // 客户端
+    return http.requestGet('/portal/article/list/' + page + '/' + size);
+  } else {
+    // 服务端
+    return http.requestGet(baseUrl + '/portal/article/list/' + page + '/' + size);
+  }
 }

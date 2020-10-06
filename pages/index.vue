@@ -22,45 +22,139 @@
           <span v-text="item.name"></span>
         </div>
       </div>
+
+      <div class="ad-box">
+        123123
+      </div>
     </div>
 
     <div class="index-center-part float-left">
       <div class="loop-box default-border-radius">
-        <el-carousel :interval="5000" arrow="always">
+        <el-carousel :interval="4000" arrow="always">
           <el-carousel-item v-for="(item,index) in loop" :key="index">
             <img :src="item.imageUrl" style="object-fit: cover">
           </el-carousel-item>
         </el-carousel>
       </div>
       <div class="top-article-box">
-        <div class="top-article-item default-border-radius" v-for="(item,index) in topArticle" :key="index">
-          <div class="top-article-cover">
-            <img :src="'http://localhost:8082/portal/image/'+item.cover">
+        <div class="article-item default-border-radius clear-fix" v-for="(item,index) in topArticle" :key="index">
+          <div class="article-left float-left">
+            <div class="article-title">
+              <span class="top-tips">置顶</span>
+              <span class="title">{{ item.title }}</span>
+            </div>
+            <div class="article-summary ">
+              <p>
+                {{ item.summary }}
+                <span>...</span>
+                <span class="read-more">读取全文</span>
+              </p>
+            </div>
+            <div class="labels">
+              <el-tag
+                size="medium"
+                v-for="(tag,tagIndex) in item.labels"
+                :key="tagIndex">
+                {{ tag }}
+              </el-tag>
+            </div>
           </div>
-          <div class="top-article-title">
-            <span class="top-tips">置顶</span>
-            <span class="top-title">{{ item.title }}</span>
-          </div>
-          <div class="top-article-summary">
-            <p>
-              {{ item.summary }}
-              <span>...</span>
-              <span class="read-more">读取全文</span>
-            </p>
-          </div>
-          <div class="top-labels">
-            <el-tag
-              size="medium"
-              v-for="(tag,tagIndex) in item.labels"
-              :key="tagIndex">
-              {{ tag }}
-            </el-tag>
+          <div class="article-right">
+            <div class="article-cover float-right">
+              <img :src="'http://localhost:8082/portal/image/'+item.cover">
+            </div>
           </div>
         </div>
       </div>
+      <div class="latest-articles-box"
+           v-loading="isLoading">
+        <div class="article-item default-border-radius clear-fix" v-for="(item,index) in articles" :key="index">
+          <div class="article-left float-left">
+            <div class="article-title">
+              <span class="title">{{ item.title }}</span>
+            </div>
+            <div class="article-summary ">
+              <p>
+                {{ item.summary }}
+                <span>...</span>
+                <span class="read-more">读取全文</span>
+              </p>
+            </div>
+            <div class="labels">
+              <el-tag
+                size="medium"
+                v-for="(tag,tagIndex) in item.labels"
+                :key="tagIndex">
+                {{ tag }}
+              </el-tag>
+            </div>
+          </div>
+          <div class="article-right">
+            <div class="article-cover float-right">
+              <img :src="'http://localhost:8082/portal/image/'+item.cover">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="article-page-navigation-bar">
+        <el-pagination
+          class="article-list-page-navigation-bar"
+          background
+          @current-change="onPageChange"
+          :current-page="pageNavigation.currentPage"
+          :page-size="pageNavigation.pageSize"
+          layout="prev, pager, next"
+          :total="pageNavigation.totalCount">
+        </el-pagination>
+      </div>
     </div>
     <div class="index-right-part float-left">
-
+      <div class="right-card">
+        <div class="card-title">
+          内容搜索
+        </div>
+        <div class="card-content">
+          <el-input
+            size="medium"
+            placeholder="直接进行一个搜索"
+            prefix-icon="el-icon-search"
+            v-model="keyword">
+          </el-input>
+        </div>
+      </div>
+      <div class="right-card">
+        <div class="card-title">
+          热门标签
+        </div>
+        <div class="card-content clear-fix">
+          <div class="labels-list-box">
+            <client-only>
+              <wordcloud
+                :margin="margin"
+                :rotate="rotate"
+                :wordPadding="wordPadding"
+                :fontSize="fontSize"
+                :data="defaultWords"
+                nameKey="name"
+                valueKey="count"
+                :showTooltip="false"
+                :wordClick="wordClickHandler">
+              </wordcloud>
+            </client-only>
+          </div>
+        </div>
+      </div>
+      <div class="right-card">
+        <div class="card-title">
+          直接空着
+        </div>
+        <div class="card-content">
+          <div class="contact">
+            <img
+              src="https://avatars0.githubusercontent.com/u/42293758?s=400&u=21b672fff6e347172b1df9d7ebf216e9c4c9c9fb&v=4">
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -69,16 +163,66 @@
 import * as api from '@/api/api';
 
 export default {
+  data() {
+    return {
+      margin: {top: 0, right: 0, bottom: 0, left: 0},
+      rotate: {from: -30, to: 30, numOfOrientation: 20},
+      fontSize: [30, 50],
+      wordPadding: 4,
+      defaultWords: [],
+      isLoading: false,
+      keyword: ''
+    }
+  },
+  mounted() {
+    // 获取标签
+    this.listLabels();
+  },
+  methods: {
+    listLabels() {
+      api.getLabels(20).then(result => {
+        if (result.code == api.success_code) {
+          this.defaultWords = result.data.content;
+        }
+      });
+    },
+    wordClickHandler(name, value, vm) {
+      console.log(value);
+    },
+    onPageChange(page) {
+      this.isLoading = true;
+      // 客户端渲染
+      // console.log(page);
+      // 加载当前页数据
+      api.getArticles(page, this.pageNavigation.pageSize).then(result => {
+        if (result.code === api.success_code) {
+          this.articles = result.data.contents;
+        } else {
+          this.$message.error(result.message);
+        }
+        this.isLoading = false;
+      })
+    },
+  },
   async asyncData({params}) {
     let userInfoRes = await api.getAdminInfo();
     let categoriesRes = await api.getCategories();
     let loopRes = await api.getLoop();
     let topArticleRes = await api.getTopArticle();
+    // 在服务器渲染
+    let articlesRes = await api.getArticles(1, 5);
+    let pageNavigation = {
+      currentPage: articlesRes.data.currentPage,
+      totalCount: articlesRes.data.totalCount,
+      pageSize: articlesRes.data.pageSize
+    };
     return {
+      pageNavigation: pageNavigation,
       userInfo: userInfoRes.data,
       categories: categoriesRes.data,
       loop: loopRes.data,
       topArticle: topArticleRes.data,
+      articles: articlesRes.data.contents,
     };
   }
 }
@@ -86,48 +230,111 @@ export default {
 
 <!--1140px 240px 660px 240px-->
 <style>
-.read-more:hover {
-  border: #444444 solid 1px;
+.ad-box {
+  padding-top: 20px;
+  width: 210px;
+  height: 210px;
+  background: #A612FF;
 }
 
-.top-labels .el-tag {
+.contact img {
+  object-fit: cover;
+  width: 210px;
+  height: 210px;
+}
+
+.wordCloud .text {
+  cursor: pointer;
+}
+
+.labels-list-box {
+  height: 400px;
+}
+
+.right-card {
+  border-radius: 4px;
+  background: #FFffff;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.right-card .card-title {
+  font-size: 14px;
+  color: #999999;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.article-page-navigation-bar {
+  text-align: center;
+}
+
+.article-page-navigation-bar .el-pagination.is-background .el-pager li {
+  background-color: #fff;
+}
+
+.read-more:hover {
+  color: #444444;
+}
+
+.labels .el-tag--medium {
+  height: 22px;
+  line-height: 22px;
+}
+
+.labels .el-tag {
   margin-right: 10px;
   cursor: pointer;
 }
 
-.top-labels {
+.labels {
   margin-top: 20px;
 }
 
 .read-more {
-  border: #999999 solid 1px;
+  color: #999999;
   border-radius: 4px;
   cursor: pointer;
   padding: 3px 10px;
   font-size: 12px;
 }
 
-.top-article-summary {
+.article-summary {
+  max-width: 500px;
   margin-top: 20px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
   color: #909399;
 }
 
-.top-article-title .top-tips {
+.article-title {
+  margin-top: 10px;
+  max-width: 500px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+}
+
+.article-title .top-tips {
   background: #ff4500;
   color: #FFffff;
+  font-size: 12px;
   padding: 3px 10px;
   vertical-align: middle;
   border-radius: 4px;
 }
 
-.top-article-item {
+.article-item {
   background: #FFffff;
   margin-bottom: 20px;
   padding: 10px;
 }
 
-.top-article-title .top-title {
-  font-size: 24px;
+.article-title .title {
+  font-size: 20px;
   vertical-align: middle;
   color: #606266;
 }
@@ -136,9 +343,9 @@ export default {
   margin-top: 20px;
 }
 
-.top-article-cover img {
-  width: 100%;
-  height: 300px;
+.article-cover img {
+  width: 120px;
+  height: 120px;
   object-fit: cover;
   border-radius: 4px;
 }
@@ -172,7 +379,9 @@ export default {
 
 .left-categories-box {
   text-align: center;
-  margin-top: 20px;
+  padding-top: 20px;
+  background: #FFffff;
+  margin-bottom: 20px;
 }
 
 .left-user-self-links span:hover {
@@ -181,7 +390,8 @@ export default {
 
 .left-user-self-links {
   text-align: center;
-  margin-top: 20px;
+  padding-top: 20px;
+  background: #FFffff;
 }
 
 .left-user-self-links span {
@@ -195,7 +405,8 @@ export default {
 
 .index-left-user-info {
   text-align: center;
-  margin-top: 10px;
+  background: #FFffff;
+  padding-top: 10px;
 }
 
 .index-left-user-info .user-sign {
@@ -221,18 +432,15 @@ export default {
   margin-bottom: 20px;
 }
 
-.index-right-part {
-  margin-left: 10px;
-}
-
 .index-left-part {
   margin-right: 10px;
+  /*background: #FFffff;*/
+  width: 210px;
 }
 
-.index-left-part, .index-right-part {
-  padding: 10px;
-  width: 210px;
-  background: #FFffff;
+.index-right-part {
+  width: 230px;
+  margin-left: 10px;
 }
 
 .index-center-part {
