@@ -7,17 +7,47 @@ export const success_code = 10000;
 export const failed_code = 40000;
 
 export const getAdminInfo = () => {
-  return http.requestGet(baseUrl + '/user/user_info/741626485537767424');
+  if (process.client) {
+    return http.requestGet('/user/user_info/741626485537767424');
+  } else {
+    return http.requestGet(baseUrl + '/user/user_info/741626485537767424');
+  }
 }
-
 export const getCategories = () => {
-  return http.requestGet(baseUrl + '/portal/article/categories');
+  if (process.client) {
+    return http.requestGet('/portal/article/categories');
+  } else {
+    return http.requestGet(baseUrl + '/portal/article/categories');
+  }
 }
 export const getLoop = () => {
-  return http.requestGet(baseUrl + '/portal/web_site_info/loop');
+  if (process.client) {
+    return http.requestGet('/portal/web_site_info/loop');
+  } else {
+    return http.requestGet(baseUrl + '/portal/web_site_info/loop');
+  }
 }
+export const getLabList = () => {
+  if (process.client) {
+    return http.requestGet('/portal/lab/list');
+  } else {
+    return http.requestGet(baseUrl + '/portal/lab/list');
+  }
+};
+
+export const getUserAppointmentsList = (userId) => {
+  if (process.client) {
+    return http.requestGet('/portal/appointment/list/' + userId);
+  } else {
+    return http.requestGet('/portal/appointment/list/' + userId);
+  }
+};
 export const getTopArticle = () => {
-  return http.requestGet(baseUrl + '/portal/article/top');
+  if (process.client) {
+    return http.requestGet(+'/portal/article/top');
+  } else {
+    return http.requestGet(baseUrl + '/portal/article/top');
+  }
 }
 export const getLabels = (count) => {
   return http.requestGet('/portal/article/label/' + count);
@@ -30,4 +60,10 @@ export const getArticles = (page, size) => {
     // 服务端
     return http.requestGet(baseUrl + '/portal/article/list/' + page + '/' + size);
   }
+}
+export const doLogin = (verifyCode, captchaKey, user) => {
+  return http.requestPost('/user/login/' + verifyCode + '/' + captchaKey + '?from=p_', user);
+}
+export const checkToken = () => {
+  return http.requestGet('/user/check_token');
 }

@@ -22,9 +22,21 @@
           <span v-text="item.name"></span>
         </div>
       </div>
-
-      <div class="ad-box">
-        123123
+      <div class="lab-box">
+        <el-table
+          :data="labs"
+          style="width: 100%">
+          <el-table-column
+            prop="labName"
+            label="实验室名称"
+            width="130">
+          </el-table-column>
+          <el-table-column
+            prop="labAvailable"
+            label="可用容量"
+            width="80">
+          </el-table-column>
+        </el-table>
       </div>
     </div>
 
@@ -146,12 +158,25 @@
       </div>
       <div class="right-card">
         <div class="card-title">
-          直接空着
+          时间管理
         </div>
         <div class="card-content">
-          <div class="contact">
-            <img
-              src="https://avatars0.githubusercontent.com/u/42293758?s=400&u=21b672fff6e347172b1df9d7ebf216e9c4c9c9fb&v=4">
+          <div class="sign-box">
+            <el-table
+              :data="app"
+              style="width: 100%">
+              <!--              :row-class-name="tableRowClassName"-->
+              <el-table-column
+                prop="id"
+                label="预约ID"
+                width="180">
+              </el-table-column>
+              <el-table-column
+                prop="state"
+                label="状态"
+                width="180">
+              </el-table-column>
+            </el-table>
           </div>
         </div>
       </div>
@@ -170,15 +195,29 @@ export default {
       fontSize: [30, 50],
       wordPadding: 4,
       defaultWords: [],
+      user: {
+        id: ''
+      },
       isLoading: false,
       keyword: ''
     }
+  },
+  beforeMount() {
+    this.checkToken();
   },
   mounted() {
     // 获取标签
     this.listLabels();
   },
   methods: {
+    checkToken() {
+      api.checkToken().then(result => {
+        if (result.code === api.success_code) {
+          this.user.id = result.data.id;
+          // console.log(this.user.id);
+        }
+      })
+    },
     listLabels() {
       api.getLabels(20).then(result => {
         if (result.code == api.success_code) {
@@ -205,18 +244,23 @@ export default {
     },
   },
   async asyncData({params}) {
+    let labRes = await api.getLabList();
     let userInfoRes = await api.getAdminInfo();
     let categoriesRes = await api.getCategories();
     let loopRes = await api.getLoop();
     let topArticleRes = await api.getTopArticle();
+    let userAppointmentsRes = await api.getUserAppointmentsList(this.user.id);
+    console.log(userAppointmentsRes);
     // 在服务器渲染
-    let articlesRes = await api.getArticles(1, 5);
+    let articlesRes = await api.getArticles(1, 10);
     let pageNavigation = {
       currentPage: articlesRes.data.currentPage,
       totalCount: articlesRes.data.totalCount,
       pageSize: articlesRes.data.pageSize
     };
     return {
+      // appointments: userAppointmentsRes.data,
+      labs: labRes.data,
       pageNavigation: pageNavigation,
       userInfo: userInfoRes.data,
       categories: categoriesRes.data,
@@ -230,17 +274,19 @@ export default {
 
 <!--1140px 240px 660px 240px-->
 <style>
-.ad-box {
-  padding-top: 20px;
-  width: 210px;
-  height: 210px;
-  background: #A612FF;
+.lab-box {
+  margin-top: 10px;
 }
 
-.contact img {
-  object-fit: cover;
-  width: 210px;
-  height: 210px;
+.el-table .warning-row {
+  background: oldlace;
+}
+
+.el-table .success-row {
+  background: #f0f9eb;
+}
+
+.sign-box {
 }
 
 .wordCloud .text {

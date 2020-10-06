@@ -4,11 +4,15 @@
       <div class="logo-box float-left">
         <div class="logo">博客</div>
       </div>
-      <div class="login-tips-text-box float-right">
-        <span><i class="sob_blog sobfingermap"></i> 登录</span>
-        <span><i class="sob_blog sobmembers-add"></i> 注册</span>
+      <div class="login-tips-text-box float-right" v-if="userInfo===null">
+        <span>
+          <a href="/login"><i class="sob_blog sobfingermap"> </i>登录</a>
+        </span>
+        <span>
+          <a href="/register"><i class="sob_blog sobmembers-add"></i>注册</a>
+        </span>
       </div>
-      <div class="navigation-box float-right">
+      <div class="navigation-box float-right ">
         <NuxtLink to="/">
           <span><i class="sob_blog sobhome"></i> 首页</span>
         </NuxtLink>
@@ -18,10 +22,11 @@
         <NuxtLink to="/link">
           <span><i class="sob_blog soblink"></i> 友链</span>
         </NuxtLink>
+        <div class="user-info-box float-right" v-if="userInfo!==null">
+          用户信息
+        </div>
       </div>
-      <div class="user-info-box float-right" style="display: none">
-        用户信息
-      </div>
+
     </div>
     <Nuxt/>
     <div class="blog-footer">
@@ -44,8 +49,34 @@
     </div>
   </div>
 </template>
+<script>
+import * as api from '@/api/api';
 
+export default {
+  methods: {
+    checkToken() {
+      api.checkToken().then(result => {
+        if (result.code === api.success_code) {
+          this.userInfo = result.data;
+        }
+      })
+    },
+  },
+  mounted() {
+    this.checkToken();
+  },
+  data() {
+    return {
+      userInfo: null
+    }
+  }
+}
+</script>
 <style>
+.el-message {
+  min-width: 0 !important;
+}
+
 .navigation-box i {
   font-size: 20px;
   font-weight: 600;
@@ -70,14 +101,18 @@
   margin-right: 50px;
 }
 
-.login-tips-text-box span {
-  cursor: pointer;
-  margin-right: 10px;
+.login-tips-text-box span :hover {
+  color: #A612FF;
 }
+
+.login-tips-text-box a {
+  margin-right: 10px;
+  color: #737F90;
+}
+
 
 .login-tips-text-box {
   font-size: 16px;
-  color: #737F90;
 }
 
 .logo-box {
