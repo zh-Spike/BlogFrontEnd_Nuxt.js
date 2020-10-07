@@ -1,5 +1,5 @@
 <template>
-  <div class="index-page-box clear-fix">
+  <div id="index-page-box" class="index-page-box clear-fix">
     <div id="index-left-part" class="index-left-part default-boarder-radius float-left">
       <div class="index-left-user-info default-boarder-radius">
         <div class="user-avatar">
@@ -45,7 +45,7 @@
       </div>
     </div>
 
-    <div class="index-center-part float-left">
+    <div id="index-center-part" class="index-center-part float-left">
       <div class="loop-box default-border-radius">
         <el-carousel :interval="4000" arrow="always">
           <el-carousel-item v-for="(item,index) in loop" :key="index">
@@ -139,7 +139,7 @@
           </el-input>
         </div>
       </div>
-      <div class="right-card">
+      <div id="hot-label-box" class="right-card">
         <div class="card-title">
           热门标签
         </div>
@@ -161,7 +161,7 @@
           </div>
         </div>
       </div>
-      <div class="right-card">
+      <div id="right-float-box" class="right-card">
         <div class="card-title">
           时间管理
         </div>
@@ -214,11 +214,73 @@ export default {
     this.checkToken();
   },
   mounted() {
-    // 获取标签
     this.listLabels();
     this.listAppointments();
+    window.addEventListener('scroll', this.onWindowScroll);
+    let that = this;
+    window.onresize = function () {
+      that.onWindowScroll();
+    }
+  },
+  beforeDestroy() {
+    window.removeEventListener('scroll', this.onWindowScroll);
   },
   methods: {
+    onWindowScroll: function () {
+      let scrolledTop = document.documentElement.scrollTop;
+      let scrolledLeft = document.documentElement.scrollLeft;
+      let centerPart = document.getElementById('index-center-part');
+      let parentPart = document.getElementById('index-page-box');
+      // 计算leftPart顶部
+      let leftPart = document.getElementById('index-left-part');
+      // 左侧悬浮控制
+      if (centerPart && leftPart && parentPart) {
+        let baseTop = centerPart.offsetTop;
+        if (scrolledTop <= baseTop) {
+          leftPart.style.top = (baseTop - scrolledTop) + 'px';
+        } else {
+          leftPart.style.top = '20px';
+        }
+        // 处理左右
+        if (scrolledLeft > 0) {
+          leftPart.style.left = -scrolledLeft + 'px';
+        } else {
+          // 正常状态 放到上级div的左边
+          leftPart.style.left = parentPart.offsetLeft + 'px';
+        }
+      }
+      // 右侧悬浮控制
+      let rightFloatBox = document.getElementById('right-float-box')
+      let hotLabelBox = document.getElementById('hot-label-box')
+      if (rightFloatBox && hotLabelBox) {
+        let bottomOfRightFloatBox = rightFloatBox.offsetTop + rightFloatBox.offsetHeight;
+        // console.log('rightFloatBox ==>' + rightFloatBox);
+        if (scrolledTop >= bottomOfRightFloatBox) {
+          // console.log('显示内容');
+          hotLabelBox.style.position = 'fixed';
+          hotLabelBox.style.top = '20px';
+          hotLabelBox.style.width = '210px';
+        } else {
+          hotLabelBox.style.position = '';
+          hotLabelBox.style.top = '';
+          // console.log('隐藏');
+        }
+        // 处理左右
+        if (scrolledLeft < 0) {
+          hotLabelBox.style.left = parentPart.offsetWidth
+            + parentPart.offsetLeft
+            + hotLabelBox.offsetWidth
+            + 'px';
+        } else {
+          hotLabelBox.style.left = parentPart.offsetWidth
+            + parentPart.offsetLeft
+            - hotLabelBox.offsetWidth
+            - scrolledLeft
+            + 'px';
+        }
+        // console.log('onScroll...'+ scrollTop);
+      }
+    },
     tableRowClassName({row}) {
       if (row.state === "0") {
         return 'danger-row';
@@ -263,6 +325,14 @@ export default {
       api.getArticles(page, this.pageNavigation.pageSize).then(result => {
         if (result.code === api.success_code) {
           this.articles = result.data.contents;
+          // 回到顶部
+          let topHeader = document.getElementById('blog-header');
+          if (topHeader) {
+            topHeader.scrollIntoView({
+              block: 'start',
+              behavior: 'smooth'
+            })
+          }
         } else {
           this.$message.error(result.message);
         }
@@ -299,10 +369,10 @@ export default {
 
 <!--1140px 240px 660px 240px-->
 <style>
-/*#index-left-part {*/
-/*  position: fixed;*/
-/*  top:0*/
-/*}*/
+#index-left-part {
+  position: fixed;
+  top: 91px
+}
 
 .lab-box {
   margin-top: 10px;
@@ -525,7 +595,7 @@ export default {
 
 .index-center-part {
   width: 640px;
-  margin-left: 10px;
+  margin-left: 250px;
   margin-right: 10px;
 }
 </style>
