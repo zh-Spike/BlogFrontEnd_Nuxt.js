@@ -35,11 +35,11 @@ export const getLabList = () => {
   }
 };
 
-export const getUserAppointmentsList = (userId) => {
+export const getUserAppointmentsList = () => {
   if (process.client) {
-    return http.requestGet('/portal/appointment/list/' + userId);
+    return http.requestGet('/portal/appointment/list/');
   } else {
-    return http.requestGet('/portal/appointment/list/' + userId);
+    return http.requestGet(baseUrl + '/portal/appointment/list/');
   }
 };
 export const getTopArticle = () => {

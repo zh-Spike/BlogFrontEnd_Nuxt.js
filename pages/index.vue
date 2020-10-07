@@ -1,6 +1,6 @@
 <template>
   <div class="index-page-box clear-fix">
-    <div class="index-left-part default-boarder-radius float-left">
+    <div id="index-left-part" class="index-left-part default-boarder-radius float-left">
       <div class="index-left-user-info default-boarder-radius">
         <div class="user-avatar">
           <img :src="userInfo.avatar">
@@ -22,21 +22,26 @@
           <span v-text="item.name"></span>
         </div>
       </div>
-      <div class="lab-box">
-        <el-table
-          :data="labs"
-          style="width: 100%">
-          <el-table-column
-            prop="labName"
-            label="实验室名称"
-            width="130">
-          </el-table-column>
-          <el-table-column
-            prop="labAvailable"
-            label="可用容量"
-            width="80">
-          </el-table-column>
-        </el-table>
+      <div class="right-card">
+        <div class="card-title">
+          当前可用实验室
+          <div class="lab-box">
+            <el-table
+              :data="labs"
+              style="width: 100%">
+              <el-table-column
+                prop="labName"
+                label="实验室名称"
+                width="130">
+              </el-table-column>
+              <el-table-column
+                prop="labAvailable"
+                label="可用容量"
+                width="80">
+              </el-table-column>
+            </el-table>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -163,18 +168,19 @@
         <div class="card-content">
           <div class="sign-box">
             <el-table
-              :data="app"
+              v-loading="loading"
+              :data="appointments"
+              :row-class-name="tableRowClassName"
               style="width: 100%">
-              <!--              :row-class-name="tableRowClassName"-->
               <el-table-column
-                prop="id"
-                label="预约ID"
-                width="180">
+                prop="labName"
+                label="审批实验室"
+                width="130">
               </el-table-column>
               <el-table-column
-                prop="state"
-                label="状态"
-                width="180">
+                prop="appointmentNumber"
+                label="预约人数"
+                width="80">
               </el-table-column>
             </el-table>
           </div>
@@ -195,6 +201,8 @@ export default {
       fontSize: [30, 50],
       wordPadding: 4,
       defaultWords: [],
+      appointments: [],
+      loading: false,
       user: {
         id: ''
       },
@@ -208,13 +216,32 @@ export default {
   mounted() {
     // 获取标签
     this.listLabels();
+    this.listAppointments();
   },
   methods: {
+    tableRowClassName({row}) {
+      if (row.state === "0") {
+        return 'danger-row';
+      } else if (row.state === "2") {
+        return 'success-row';
+      }
+      return '';
+    },
+    listAppointments() {
+      this.loading = true;
+      api.getUserAppointmentsList().then(result => {
+        this.loading = false;
+        // console.log(result);
+        if (result.code === api.success_code) {
+          this.appointments = result.data;
+        }
+      });
+    },
     checkToken() {
       api.checkToken().then(result => {
         if (result.code === api.success_code) {
-          this.user.id = result.data.id;
-          // console.log(this.user.id);
+          this.user = result.data;
+          // console.log(this.user);
         }
       })
     },
@@ -242,15 +269,14 @@ export default {
         this.isLoading = false;
       })
     },
-  },
+  }
+  ,
   async asyncData({params}) {
     let labRes = await api.getLabList();
     let userInfoRes = await api.getAdminInfo();
     let categoriesRes = await api.getCategories();
     let loopRes = await api.getLoop();
     let topArticleRes = await api.getTopArticle();
-    let userAppointmentsRes = await api.getUserAppointmentsList(this.user.id);
-    console.log(userAppointmentsRes);
     // 在服务器渲染
     let articlesRes = await api.getArticles(1, 10);
     let pageNavigation = {
@@ -259,7 +285,6 @@ export default {
       pageSize: articlesRes.data.pageSize
     };
     return {
-      // appointments: userAppointmentsRes.data,
       labs: labRes.data,
       pageNavigation: pageNavigation,
       userInfo: userInfoRes.data,
@@ -274,19 +299,28 @@ export default {
 
 <!--1140px 240px 660px 240px-->
 <style>
+/*#index-left-part {*/
+/*  position: fixed;*/
+/*  top:0*/
+/*}*/
+
 .lab-box {
   margin-top: 10px;
+  border-radius: 4px;
 }
 
-.el-table .warning-row {
+.el-table .danger-row {
   background: oldlace;
+  border-radius: 4px;
 }
 
 .el-table .success-row {
+  border-radius: 4px;
   background: #f0f9eb;
 }
 
 .sign-box {
+  border-radius: 4px;
 }
 
 .wordCloud .text {
@@ -481,7 +515,7 @@ export default {
 .index-left-part {
   margin-right: 10px;
   /*background: #FFffff;*/
-  width: 210px;
+  width: 230px;
 }
 
 .index-right-part {

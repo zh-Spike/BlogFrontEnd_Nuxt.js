@@ -87,6 +87,7 @@ export default {
       api.doLogin(this.loginInfo.verifyCode, this.loginInfo.captcha_key, this.user).then(result => {
         // 处理登陆结果
         // 判断状态
+        console.log(result);
         if (result.code === api.success_code) {
           this.isCommitting = false;
           this.$message({
