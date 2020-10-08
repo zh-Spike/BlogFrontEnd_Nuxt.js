@@ -56,9 +56,3 @@ export default {
     transpile: [/^element-ui/],
   }
 }
-module.exports = {
-  loading: {
-    color: 'hotpink',
-    height: '10px'
-  }
-}

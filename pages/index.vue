@@ -17,9 +17,9 @@
         <span class="sob_blog sobbilibili-line"></span>
         <span class="sob_blog sobgithub"> </span>
       </div>
-      <div class="left-categories-box default-boarder-radius">
-        <div class="category-item" v-for="(item,index) in categories" :key="index">
-          <span v-text="item.name"></span>
+      <div class="left-categories-box ">
+        <div class="category-item default-boarder-radius" v-for="(item,index) in categories" :key="index">
+          <span v-text="item.name" @click="listArticlesByCategoryId(item)"></span>
         </div>
       </div>
       <div class="right-card">
@@ -202,6 +202,7 @@ export default {
       wordPadding: 4,
       defaultWords: [],
       appointments: [],
+      currentCategoryId: '',
       loading: false,
       user: {
         id: ''
@@ -226,6 +227,20 @@ export default {
     window.removeEventListener('scroll', this.onWindowScroll);
   },
   methods: {
+    listArticlesByCategoryId(item) {
+      this.loading = true;
+      // console.log(item);
+      // 重置页码
+      this.pageNavigation.currentPage = 1;
+      this.currentCategoryId = item.id;
+      // 请求结果
+      api.getArticles(this.currentCategoryId,
+        this.pageNavigation.currentPage,
+        this.pageNavigation.pageSize).then(result => {
+        // 处理结果
+        this.handleArticleResult(result);
+      });
+    },
     onWindowScroll: function () {
       let scrolledTop = document.documentElement.scrollTop;
       let scrolledLeft = document.documentElement.scrollLeft;
@@ -317,26 +332,33 @@ export default {
     wordClickHandler(name, value, vm) {
       console.log(value);
     },
+    handleArticleResult(result) {
+      if (result.code === api.success_code) {
+        this.articles = result.data.contents;
+        // 回到顶部
+        let topHeader = document.getElementById('blog-header');
+        if (topHeader) {
+          topHeader.scrollIntoView({
+            block: 'start',
+            behavior: 'smooth'
+          })
+        }
+        // 处理页码
+        this.pageNavigation.currentPage = result.data.currentPage;
+        this.pageNavigation.totalCount = result.data.totalCount;
+        this.pageNavigation.pageSize = result.data.pageSize;
+      } else {
+        this.$message.error(result.message);
+      }
+      this.isLoading = false;
+    },
     onPageChange(page) {
       this.isLoading = true;
       // 客户端渲染
       // console.log(page);
       // 加载当前页数据
-      api.getArticles(page, this.pageNavigation.pageSize).then(result => {
-        if (result.code === api.success_code) {
-          this.articles = result.data.contents;
-          // 回到顶部
-          let topHeader = document.getElementById('blog-header');
-          if (topHeader) {
-            topHeader.scrollIntoView({
-              block: 'start',
-              behavior: 'smooth'
-            })
-          }
-        } else {
-          this.$message.error(result.message);
-        }
-        this.isLoading = false;
+      api.getArticles(this.currentCategoryId, page, this.pageNavigation.pageSize).then(result => {
+        this.handleArticleResult(result);
       })
     },
   }
@@ -348,17 +370,23 @@ export default {
     let loopRes = await api.getLoop();
     let topArticleRes = await api.getTopArticle();
     // 在服务器渲染
-    let articlesRes = await api.getArticles(1, 10);
+    let articlesRes = await api.getArticles('', 1, 10);
     let pageNavigation = {
       currentPage: articlesRes.data.currentPage,
       totalCount: articlesRes.data.totalCount,
       pageSize: articlesRes.data.pageSize
     };
+    let tempCategories = [];
+    tempCategories.push({
+      name: '全部分类',
+      id: ''
+    });
+    tempCategories = tempCategories.concat(categoriesRes.data);
     return {
       labs: labRes.data,
       pageNavigation: pageNavigation,
       userInfo: userInfoRes.data,
-      categories: categoriesRes.data,
+      categories: tempCategories,
       loop: loopRes.data,
       topArticle: topArticleRes.data,
       articles: articlesRes.data.contents,
@@ -519,11 +547,14 @@ export default {
 
 .left-categories-box .category-item:hover {
   background: #F5F5F5;
+  color: #409EFF;
 }
 
 .left-categories-box .category-item {
   padding: 10px 5px;
   cursor: pointer;
+  margin-left: 15px;
+  margin-right: 15px;
   color: #666666;
 }
 
@@ -532,6 +563,7 @@ export default {
   padding-top: 20px;
   background: #FFffff;
   margin-bottom: 20px;
+  padding-bottom: 10px;
 }
 
 .left-user-self-links span:hover {

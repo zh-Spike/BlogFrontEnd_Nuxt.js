@@ -37,9 +37,9 @@ export const getLabList = () => {
 
 export const getUserAppointmentsList = () => {
   if (process.client) {
-    return http.requestGet('/portal/appointment/list/');
+    return http.requestGet('/portal/appointment/list');
   } else {
-    return http.requestGet(baseUrl + '/portal/appointment/list/');
+    return http.requestGet(baseUrl + '/portal/appointment/list');
   }
 };
 export const getTopArticle = () => {
@@ -52,7 +52,10 @@ export const getTopArticle = () => {
 export const getLabels = (count) => {
   return http.requestGet('/portal/article/label/' + count);
 }
-export const getArticles = (page, size) => {
+export const getArticles = (categoryId, page, size) => {
+  if (categoryId !== '') {
+    return http.requestGet('/portal/article/list/' + categoryId + '/' + page + '/' + size);
+  }
   if (process.client) {
     // 客户端
     return http.requestGet('/portal/article/list/' + page + '/' + size);

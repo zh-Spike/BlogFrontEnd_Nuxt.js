@@ -1,11 +1,24 @@
 <template>
   <div class="index-page-box">
-    friendLink
+    <div class="link-title">
+
+    </div>
+    <div class="link-list-box">
+      <div class="link-item">
+
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-export default {}
+import * as api from '@/api/api';
+
+export default {
+  asyncData() {
+    api.getFriendLink();
+  }
+}
 </script>
 
 <style>
