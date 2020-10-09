@@ -21,13 +21,13 @@
 
             </div>
             <div class="search-info-box">
-              <span v-text="item.blogCreateTime">
-
+              <span class="sob_blog sobicon">
+                {{ item.blogCreateTime |formatDate("yyyy-MM-dd hh:mm:ss") }}
               </span>
-              <span v-text="item.blogViewCount">
-
+              <span class="sob_blog sobview">
+               {{ item.blogViewCount }}
               </span>
-              <span v-text="blogLabels">
+              <span v-text="item.blogLabels">
 
               </span>
             </div>
@@ -67,6 +67,49 @@ export default {
 </script>
 
 <style>
+.search-info-box span {
+  margin-right: 10px;
+}
+
+.search-info-box {
+  color: #999;
+  font-size: 14px;
+}
+
+.result-item-content {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: #4d5156;
+  font-size: 16px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.search-result-item {
+  margin-bottom: 20px;
+}
+
+.result-item-title {
+  color: #409EFF;
+  font-size: 20px;
+  line-height: 1.3;
+}
+
+.search-result-list-box {
+  padding: 20px;
+}
+
+.search-result-count-info {
+  color: #70757a;
+  line-height: 20px;
+  font-size: 16px;
+  padding: 10px;
+  margin-left: 20px;
+  margin-top: 20px;
+}
+
 .search-condition-box {
   height: 80px;
   margin-bottom: 20px;
