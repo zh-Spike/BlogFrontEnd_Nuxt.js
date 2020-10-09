@@ -26,7 +26,6 @@
           用户信息
         </div>
       </div>
-
     </div>
     <Nuxt/>
     <div class="blog-footer">

@@ -13,6 +13,7 @@ export const getAdminInfo = () => {
     return http.requestGet(baseUrl + '/user/user_info/741626485537767424');
   }
 }
+
 export const getCategories = () => {
   if (process.client) {
     return http.requestGet('/portal/article/categories');
@@ -20,6 +21,7 @@ export const getCategories = () => {
     return http.requestGet(baseUrl + '/portal/article/categories');
   }
 }
+
 export const getLoop = () => {
   if (process.client) {
     return http.requestGet('/portal/web_site_info/loop');
@@ -27,31 +29,31 @@ export const getLoop = () => {
     return http.requestGet(baseUrl + '/portal/web_site_info/loop');
   }
 }
+
 export const getLabList = () => {
   if (process.client) {
     return http.requestGet('/portal/lab/list');
   } else {
     return http.requestGet(baseUrl + '/portal/lab/list');
   }
-};
+}
 
 export const getUserAppointmentsList = () => {
-  if (process.client) {
-    return http.requestGet('/portal/appointment/list');
-  } else {
-    return http.requestGet(baseUrl + '/portal/appointment/list');
-  }
-};
+  return http.requestGet('/portal/appointment/list');
+}
+
 export const getTopArticle = () => {
   if (process.client) {
-    return http.requestGet(+'/portal/article/top');
+    return http.requestGet('/portal/article/top');
   } else {
     return http.requestGet(baseUrl + '/portal/article/top');
   }
 }
+
 export const getLabels = (count) => {
   return http.requestGet('/portal/article/label/' + count);
 }
+
 export const getArticles = (categoryId, page, size) => {
   if (categoryId !== '') {
     return http.requestGet('/portal/article/list/' + categoryId + '/' + page + '/' + size);
@@ -64,9 +66,26 @@ export const getArticles = (categoryId, page, size) => {
     return http.requestGet(baseUrl + '/portal/article/list/' + page + '/' + size);
   }
 }
+
 export const doLogin = (verifyCode, captchaKey, user) => {
   return http.requestPost('/user/login/' + verifyCode + '/' + captchaKey + '?from=p_', user);
 }
+
 export const checkToken = () => {
   return http.requestGet('/user/check_token');
+}
+
+export const getLinkList = () => {
+  if (process.client) {
+    return http.requestGet('/portal/web_site_info/friend_link');
+  } else {
+    return http.requestGet(baseUrl + '/portal/web_site_info/friend_link');
+  }
+}
+
+export const getSearchContent = (categoryId, keyword,
+                                 page, size, sort) => {
+  return http.requestGet(baseUrl + '/portal/search?categoryId=' + categoryId +
+    '&keyword=' + encodeURIComponent(keyword) + '&page=' + page +
+    '&size=' + size + '&sort=' + sort);
 }

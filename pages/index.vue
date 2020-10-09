@@ -18,7 +18,10 @@
         <span class="sob_blog sobgithub"> </span>
       </div>
       <div class="left-categories-box ">
-        <div class="category-item default-boarder-radius" v-for="(item,index) in categories" :key="index">
+        <div
+          :class="currentCategoryId===item.id?'category-item-active default-boarder-radius':'category-item default-boarder-radius'"
+          v-for="(item,index) in categories"
+          :key="index">
           <span v-text="item.name" @click="listArticlesByCategoryId(item)"></span>
         </div>
       </div>
@@ -133,6 +136,7 @@
         <div class="card-content">
           <el-input
             size="medium"
+            @keyup.enter.native="toSearchPage"
             placeholder="直接进行一个搜索"
             prefix-icon="el-icon-search"
             v-model="keyword">
@@ -164,11 +168,13 @@
       <div id="right-float-box" class="right-card">
         <div class="card-title">
           时间管理
+          <div class="card-subtitle">
+            绿色通过 红色拒绝 白色审批中
+          </div>
         </div>
         <div class="card-content">
           <div class="sign-box">
             <el-table
-              v-loading="loading"
               :data="appointments"
               :row-class-name="tableRowClassName"
               style="width: 100%">
@@ -211,12 +217,10 @@ export default {
       keyword: ''
     }
   },
-  beforeMount() {
-    this.checkToken();
-  },
   mounted() {
     this.listLabels();
     this.listAppointments();
+    this.checkToken();
     window.addEventListener('scroll', this.onWindowScroll);
     let that = this;
     window.onresize = function () {
@@ -227,7 +231,20 @@ export default {
     window.removeEventListener('scroll', this.onWindowScroll);
   },
   methods: {
+    toSearchPage() {
+      // 如果没有输入 则无效
+      this.keyword == this.keyword.trim();
+      if (this.keyword === '') {
+        console.log('内容为空');
+        return;
+      }
+      // 跳转搜索页面
+      location.href = '/search?keyword=' + encodeURIComponent(this.keyword);
+    },
     listArticlesByCategoryId(item) {
+      if ((this.currentCategoryId === item.id)) {
+        return;
+      }
       this.loading = true;
       // console.log(item);
       // 重置页码
@@ -324,7 +341,7 @@ export default {
     },
     listLabels() {
       api.getLabels(20).then(result => {
-        if (result.code == api.success_code) {
+        if (result.code === api.success_code) {
           this.defaultWords = result.data.content;
         }
       });
@@ -361,8 +378,7 @@ export default {
         this.handleArticleResult(result);
       })
     },
-  }
-  ,
+  },
   async asyncData({params}) {
     let labRes = await api.getLabList();
     let userInfoRes = await api.getAdminInfo();
@@ -434,6 +450,13 @@ export default {
   background: #FFffff;
   padding: 10px;
   margin-bottom: 20px;
+}
+
+.right-card .card-subtitle {
+  font-size: 10px;
+  color: #909399;
+  margin-bottom: 10px;
+  font-weight: 200;
 }
 
 .right-card .card-title {
@@ -545,17 +568,19 @@ export default {
   border-radius: 4px;
 }
 
-.left-categories-box .category-item:hover {
+.left-categories-box .category-item:hover,
+.left-categories-box .category-item-active {
   background: #F5F5F5;
-  color: #409EFF;
+  color: #409EFF !important;
 }
 
-.left-categories-box .category-item {
+.left-categories-box .category-item,
+.left-categories-box .category-item-active {
   padding: 10px 5px;
   cursor: pointer;
   margin-left: 15px;
   margin-right: 15px;
-  color: #666666;
+  color: #999999;
 }
 
 .left-categories-box {
