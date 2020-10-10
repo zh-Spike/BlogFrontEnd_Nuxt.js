@@ -2,7 +2,11 @@
   <div id="blog-box">
     <div id="blog-header" class="blog-header clear-fix default-border-radius">
       <div class="logo-box float-left">
-        <div class="logo">博客</div>
+        <div class="logo">
+          <a href="/">
+            <h1>博客</h1>
+          </a>
+        </div>
       </div>
       <div class="login-tips-text-box float-right" v-if="userInfo===null">
         <span>
@@ -72,6 +76,12 @@ export default {
 }
 </script>
 <style>
+h1 {
+  color: #737F90;
+  font-size: 24px;
+  font-weight: 600;
+}
+
 .el-message {
   min-width: 0 !important;
 }

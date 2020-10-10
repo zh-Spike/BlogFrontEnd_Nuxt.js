@@ -76,7 +76,7 @@
                 v-for="(tag,tagIndex) in item.labels"
                 :key="tagIndex"
                 type="info">
-                {{ tag }}
+                <a :href="'/search?keyword=' + tag" target="_blank">{{ tag }}</a>
               </el-tag>
             </div>
           </div>
@@ -107,7 +107,7 @@
                 v-for="(tag,tagIndex) in item.labels"
                 :key="tagIndex"
                 type="info">
-                {{ tag }}
+                <a :href="'/search?keyword=' + tag" target="_blank">{{ tag }}</a>
               </el-tag>
             </div>
           </div>
@@ -349,7 +349,9 @@ export default {
       });
     },
     wordClickHandler(name, value, vm) {
-      console.log(value);
+      // console.log(value);
+      // name就关键字 直接跳转
+      location.href = '/search?keyword' + encodeURIComponent(name);
     },
     handleArticleResult(result) {
       if (result.code === api.success_code) {
@@ -488,6 +490,16 @@ export default {
 .labels .el-tag {
   margin-right: 10px;
   cursor: pointer;
+  padding: 0;
+}
+
+.labels .el-tag a {
+  color: #909399;
+  padding: 0 10px;
+}
+
+.labels .el-tag a:hover {
+  color: #A612FF;
 }
 
 .labels {
