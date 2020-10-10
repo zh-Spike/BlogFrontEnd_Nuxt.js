@@ -85,7 +85,13 @@ export const getLinkList = () => {
 
 export const getSearchContent = (categoryId, keyword,
                                  page, size, sort) => {
-  return http.requestGet(baseUrl + '/portal/search?categoryId=' + categoryId +
-    '&keyword=' + encodeURIComponent(keyword) + '&page=' + page +
-    '&size=' + size + '&sort=' + sort);
+  if (process.client) {
+    return http.requestGet('/portal/search?categoryId=' + categoryId +
+      '&keyword=' + encodeURIComponent(keyword) + '&page=' + page +
+      '&size=' + size + '&sort=' + sort);
+  } else {
+    return http.requestGet(baseUrl + '/portal/search?categoryId=' + categoryId +
+      '&keyword=' + encodeURIComponent(keyword) + '&page=' + page +
+      '&size=' + size + '&sort=' + sort);
+  }
 }

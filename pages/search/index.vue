@@ -1,10 +1,32 @@
 <template>
   <div class="search-box ">
     <div class="search-input-box">
-
+      <div class="search-input-container clear-fix">
+        <div class="search-logo float-left">
+          <span class="logo">Spike</span>
+          <span> | </span>
+          <span>搜索</span>
+        </div>
+        <div class="search-input float-left">
+          <el-input @keyup.enter.native="toSearchPage" v-model="keyword" placeholder="您有什么想要搜索的嘛？(つд⊂)"></el-input>
+        </div>
+        <div class="search-btn float-left">
+          <el-button type="primary" icon="el-icon-search" @click="toSearchPage">搜索</el-button>
+        </div>
+      </div>
     </div>
     <div class="search-condition-box">
-
+      <div class="select-item">
+        <span :class="sort===''?'sort-active':''" @click="doSearchBySort('')">综合排序</span>
+        <span @click="doSearchBySort('2')" :class="sort==='2'||sort==='1'?'sort-active':''">时间</span>
+        <span @click="doSearchBySort('4')" :class="sort==='3'||sort==='4'?'sort-active':''">浏览量</span>
+      </div>
+      <div class="select-item">
+        <span :class="categoryId===''?'category-active':''" @click="doSearchByCategory('')">全部分类</span>
+        <span :class="categoryId===item.id?'category-active':''"
+              v-for="item in categories" :key="item.id"
+              @click="doSearchByCategory(item.id)">{{ item.name }}</span>
+      </div>
     </div>
     <div class="search-result-box clear-fix">
       <div class="search-left-box float-left">
@@ -13,7 +35,7 @@
           <div class="search-result-count-info">
             找到约 <span v-text="searchResult.totalCount"></span> 条结果
           </div>
-          <div class="search-result-list-box">
+          <div class="search-result-list-box" v-if="searchResult.contents.length!==0">
             <div class="search-result-item" v-for="(item,index) in searchResult.contents" :key="index">
               <div class="result-item-title" v-html="item.blogTitle">
 
@@ -40,6 +62,12 @@
                 </el-tag>
               </span>
               </div>
+            </div>
+          </div>
+          <div class="search-result-empty-box" v-else>
+            <div class="empty-box">
+              <div class="sob_blog sobemptybox"></div>
+              <div class="empty-box">没有找到所求内容 (￣_,￣ )</div>
             </div>
           </div>
         </div>
@@ -80,41 +108,129 @@
 import * as api from '@/api/api';
 
 export default {
-  asyncData({query}) {
+  async asyncData({query}) {
     // console.log(query);
     let categoryId = query.categoryId ? query.categoryId : '';
     let keyword = query.keyword ? query.keyword : '';
     let page = query.page ? query.page : 1;
     let size = query.size ? query.size : 10;
-    let sort = query.sort ? query : '';
+    let sort = query.sort ? query.sort : '';
 
     // 发起请求 获得搜索内容
-    return api.getSearchContent(categoryId, keyword,
-      page, size, sort).then(result => {
-      // console.log(result.data);
-      // 处理一下标签
-      let tempResult = result.data;
-      let contents = tempResult.contents;
-      contents.forEach(item => {
-        item.blogLabels = item.blogLabels.split("-");
-        // console.log(item.blogLabels);
-      });
-      return {
-        categoryId: categoryId,
-        keyword: keyword,
-        page: parseInt(page),
-        size: parseInt(size),
-        sort: sort,
-        isFirst: tempResult.first,
-        isLast: tempResult.last,
-        searchResult: tempResult,
-      }
+    // 改为同步
+    let result = await api.getSearchContent(categoryId, keyword,
+      page, size, sort);
+    let tempResult = result.data;
+    let contents = tempResult.contents;
+    contents.forEach(item => {
+      item.blogLabels = item.blogLabels.split("-");
+      // console.log(item.blogLabels);
     });
+    // 获取分类
+    let categoriesRes = await api.getCategories();
+    // console.log(categoriesRes.data);
+    return {
+      categories: categoriesRes.data,
+      categoryId: categoryId,
+      keyword: keyword,
+      page: parseInt(page),
+      size: parseInt(size),
+      sort: sort,
+      isFirst: tempResult.first,
+      isLast: tempResult.last,
+      searchResult: tempResult,
+    }
+  },
+  methods: {
+    doSearchByCategory(categoryId) {
+      location.href = "/search?keyword=" + encodeURIComponent(this.keyword) + '&sort=' + this.sort + '&categoryId=' + categoryId;
+    },
+    doSearchBySort(sort) {
+      if (sort === '2' && this.sort === '2') {
+        sort = '1';
+      }
+      if (sort === '4' && this.sort === '4') {
+        // 浏览量的倒序顺序
+        sort = '3';
+      }
+
+      // 时间的倒序顺序
+      location.href = "/search?keyword=" + encodeURIComponent(this.keyword) + '&sort=' + sort + '&categoryId=' + this.categoryId;
+    },
+    toSearchPage() {
+      location.href = "/search?keyword=" + encodeURIComponent(this.keyword);
+    },
   }
 }
+
 </script>
 
 <style>
+.search-result-empty-box .empty-text {
+  font-size: 20px;
+  line-height: 40px;
+}
+
+.search-result-empty-box {
+  height: 400px;
+  text-align: center;
+  margin-top: 120px;
+  color: #409EFF;
+}
+
+.search-result-empty-box .sobemptybox {
+  font-size: 70px;
+}
+
+.category-active, .sort-active {
+  background: #409EFF;
+  border-radius: 4px;
+  color: #FFffff !important;
+}
+
+.select-item span:hover {
+  color: #409EFF;
+}
+
+.select-item span {
+  color: #737F90;
+  margin-right: 8px;
+  margin-left: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 5px 15px;
+}
+
+.select-item {
+  margin-top: 10px;
+  line-height: 24px;
+}
+
+.search-input-container {
+  display: inline-block;
+  line-height: 40px;
+}
+
+.search-logo .logo {
+  font-size: 30px;
+}
+
+.search-logo {
+  color: #409EFF;
+  font-size: 20px;
+  font-weight: 600;
+  margin-right: 20px;
+}
+
+.search-input .el-input__inner {
+  border-width: 2px;
+}
+
+.search-input {
+  width: 300px;
+  margin-right: 20px;
+}
+
 .search-pre, .search-next {
   cursor: pointer;
 }
@@ -187,19 +303,20 @@ export default {
   color: #70757a;
   line-height: 20px;
   font-size: 16px;
-  padding: 10px;
   margin-left: 20px;
 }
 
 .search-condition-box {
-  height: 80px;
+  border-top: solid 1px #DCDFE6;
   margin-bottom: 20px;
-  background: greenyellow;
+  background: #FFffff;
+  padding: 20px 20px 30px;
 }
 
 .search-input-box {
-  height: 80px;
-  background: #A612FF;
+  padding: 20px;
+  text-align: center;
+  background: #fff;
 }
 
 .search-box {
