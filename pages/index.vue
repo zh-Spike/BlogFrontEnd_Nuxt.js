@@ -74,7 +74,8 @@
               <el-tag
                 size="medium"
                 v-for="(tag,tagIndex) in item.labels"
-                :key="tagIndex">
+                :key="tagIndex"
+                type="info">
                 {{ tag }}
               </el-tag>
             </div>
@@ -104,7 +105,8 @@
               <el-tag
                 size="medium"
                 v-for="(tag,tagIndex) in item.labels"
-                :key="tagIndex">
+                :key="tagIndex"
+                type="info">
                 {{ tag }}
               </el-tag>
             </div>
@@ -534,10 +536,15 @@ export default {
   padding: 10px;
 }
 
+.article-title .title:hover {
+  color: #A612FF;
+}
+
 .article-title .title {
+  color: #409EFF;
+  cursor: pointer;
   font-size: 20px;
   vertical-align: middle;
-  color: #606266;
 }
 
 .top-article-box {

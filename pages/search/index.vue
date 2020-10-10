@@ -8,33 +8,67 @@
     </div>
     <div class="search-result-box clear-fix">
       <div class="search-left-box float-left">
-        <!-- 1140 - 20 = 1120 == > 1120 - 300 == > 820 -->
-        <div class="search-result-count-info">
-          找到约 <span v-text="searchResult.totalCount"></span> 条结果
-        </div>
-        <div class="search-result-list-box">
-          <div class="search-result-item" v-for="(item,index) in searchResult.contents" :key="index">
-            <div class="result-item-title" v-html="item.blogTitle">
+        <div class="search-result-list">
+          <!-- 1140 - 20 = 1120 == > 1120 - 300 == > 820 -->
+          <div class="search-result-count-info">
+            找到约 <span v-text="searchResult.totalCount"></span> 条结果
+          </div>
+          <div class="search-result-list-box">
+            <div class="search-result-item" v-for="(item,index) in searchResult.contents" :key="index">
+              <div class="result-item-title" v-html="item.blogTitle">
 
-            </div>
-            <div class="result-item-content" v-html="item.blogContent">
+              </div>
+              <div class="result-item-content" v-html="item.blogContent">
 
-            </div>
-            <div class="search-info-box">
+              </div>
+              <div class="search-info-box">
               <span class="sob_blog sobicon">
                 {{ item.blogCreateTime |formatDate("yyyy-MM-dd hh:mm:ss") }}
               </span>
-              <span class="sob_blog sobview">
+                <span class="sob_blog sobview">
                {{ item.blogViewCount }}
               </span>
-              <span v-text="item.blogLabels">
-
+              </div>
+              <div class="search-info-box">
+              <span>
+                <el-tag
+                  size="mini"
+                  v-for="(tag,tagIndex) in item.blogLabels"
+                  :key="tagIndex"
+                  type="info">
+                  {{ tag }}
+                </el-tag>
               </span>
+              </div>
             </div>
           </div>
         </div>
+        <div class="search-result-page-navigation-box clear-fix">
+          <div class="search-pre float-left">
+            <el-link disabled v-if="isFirst">
+              &lt;&lt; 上一页
+            </el-link>
+            <el-link v-else :href="'search?keyword='+keyword
+                                  +'&page='+(page-1)
+                                  +'&sort='+sort
+                                  +'&categoryId='+categoryId">
+              &lt;&lt; 上一页
+            </el-link>
+          </div>
+          <div class="search-next float-right">
+            <el-link disabled v-if="isLast">
+              下一页 &gt;&gt;
+            </el-link>
+            <el-link v-else :href="'search?keyword='+keyword
+                                  +'&page='+(page+1)
+                                  +'&sort='+sort
+                                  +'&categoryId='+categoryId">
+              下一页 &gt;&gt;
+            </el-link>
+          </div>
+        </div>
       </div>
-      <div class="search-right-box float-left">
+      <div class=" search-right-box float-left">
         <!--300px-->
 
       </div>
@@ -57,9 +91,23 @@ export default {
     // 发起请求 获得搜索内容
     return api.getSearchContent(categoryId, keyword,
       page, size, sort).then(result => {
-      console.log(result.data);
+      // console.log(result.data);
+      // 处理一下标签
+      let tempResult = result.data;
+      let contents = tempResult.contents;
+      contents.forEach(item => {
+        item.blogLabels = item.blogLabels.split("-");
+        // console.log(item.blogLabels);
+      });
       return {
-        searchResult: result.data,
+        categoryId: categoryId,
+        keyword: keyword,
+        page: parseInt(page),
+        size: parseInt(size),
+        sort: sort,
+        isFirst: tempResult.first,
+        isLast: tempResult.last,
+        searchResult: tempResult,
       }
     });
   }
@@ -67,12 +115,36 @@ export default {
 </script>
 
 <style>
+.search-pre, .search-next {
+  cursor: pointer;
+}
+
+.search-pre:hover, .search-next:hover {
+  color: #409EFF;
+}
+
+.search-pre-disabled, .search-next-disabled {
+  cursor: not-allowed;
+}
+
+.search-result-list {
+  padding-top: 20px;
+  background: #fff;
+}
+
+.search-result-page-navigation-box {
+  background: #fff;
+  margin-top: 20px;
+  padding: 20px;
+}
+
 .search-info-box span {
   margin-right: 10px;
 }
 
 .search-info-box {
   color: #999;
+  margin-bottom: 5px;
   font-size: 14px;
 }
 
@@ -82,6 +154,8 @@ export default {
   color: #4d5156;
   font-size: 16px;
   display: -webkit-box;
+  line-height: 20px;
+  height: 40px;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
@@ -93,8 +167,16 @@ export default {
 
 .result-item-title {
   color: #409EFF;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  display: -webkit-box;
+  cursor: pointer;
+  line-height: 26px;
+  height: 26px;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
   font-size: 20px;
-  line-height: 1.3;
 }
 
 .search-result-list-box {
@@ -107,7 +189,6 @@ export default {
   font-size: 16px;
   padding: 10px;
   margin-left: 20px;
-  margin-top: 20px;
 }
 
 .search-condition-box {
@@ -129,7 +210,6 @@ export default {
 .search-left-box {
   width: 820px;
   margin-right: 20px;
-  background-color: #fff;
 }
 
 .search-right-box {
