@@ -1,34 +1,37 @@
 <template>
   <div class="search-box ">
-    <div class="search-input-box">
-      <div class="search-input-container clear-fix">
-        <div class="search-logo float-left">
-          <span class="logo">Spike</span>
-          <span> | </span>
-          <span>搜索</span>
+    <div class="default-boarder-radius search-input-service">
+      <div class="search-input-box ">
+        <div class="search-input-container  clear-fix">
+          <div class="search-logo float-left">
+            <span class="logo">Spike</span>
+            <span> | </span>
+            <span>搜索</span>
+          </div>
+          <div class="search-input float-left">
+            <el-input @keyup.enter.native="toSearchPage" v-model="keyword" placeholder="您有什么想要搜索的嘛？(つд⊂)"></el-input>
+          </div>
+          <div class="search-btn float-left">
+            <el-button type="primary" icon="el-icon-search" @click="toSearchPage">搜索</el-button>
+          </div>
         </div>
-        <div class="search-input float-left">
-          <el-input @keyup.enter.native="toSearchPage" v-model="keyword" placeholder="您有什么想要搜索的嘛？(つд⊂)"></el-input>
+      </div>
+      <div class="search-condition-box ">
+        <div class="select-item">
+          <span :class="sort===''?'sort-active':''" @click="doSearchBySort('')">综合排序</span>
+          <span @click="doSearchBySort('2')" :class="sort==='2'||sort==='1'?'sort-active':''">时间</span>
+          <span @click="doSearchBySort('4')" :class="sort==='3'||sort==='4'?'sort-active':''">浏览量</span>
         </div>
-        <div class="search-btn float-left">
-          <el-button type="primary" icon="el-icon-search" @click="toSearchPage">搜索</el-button>
+        <div class="select-item">
+          <span :class="categoryId===''?'category-active':''" @click="doSearchByCategory('')">全部分类</span>
+          <span :class="categoryId===item.id?'category-active':''"
+                v-for="item in categories" :key="item.id"
+                @click="doSearchByCategory(item.id)">{{ item.name }}</span>
         </div>
       </div>
     </div>
-    <div class="search-condition-box">
-      <div class="select-item">
-        <span :class="sort===''?'sort-active':''" @click="doSearchBySort('')">综合排序</span>
-        <span @click="doSearchBySort('2')" :class="sort==='2'||sort==='1'?'sort-active':''">时间</span>
-        <span @click="doSearchBySort('4')" :class="sort==='3'||sort==='4'?'sort-active':''">浏览量</span>
-      </div>
-      <div class="select-item">
-        <span :class="categoryId===''?'category-active':''" @click="doSearchByCategory('')">全部分类</span>
-        <span :class="categoryId===item.id?'category-active':''"
-              v-for="item in categories" :key="item.id"
-              @click="doSearchByCategory(item.id)">{{ item.name }}</span>
-      </div>
-    </div>
-    <div class="search-result-box clear-fix">
+
+    <div class="search-result-box default-boarder-radius clear-fix">
       <div class="search-left-box float-left">
         <div class="search-result-list">
           <!-- 1140 - 20 = 1120 == > 1120 - 300 == > 820 -->
@@ -96,8 +99,16 @@
           </div>
         </div>
       </div>
-      <div class=" search-right-box float-left">
+      <div class="search-right-box float-left">
         <!--300px-->
+        <div class="search-hot-word default-boarder-radius">
+          <div class="card-header">
+            热门标签
+          </div>
+          <word-cloud></word-cloud>
+        </div>
+      </div>
+      <div class="extend-box default-boarder-radius">
 
       </div>
     </div>
@@ -166,6 +177,24 @@ export default {
 </script>
 
 <style>
+.search-input-service {
+  background: #FFffff;
+}
+
+.search-hot-word {
+  padding: 20px;
+  background: #FFffff;
+  margin-bottom: 20px;
+}
+
+.card-header {
+  color: #909399;
+  padding-bottom: 15px;
+  padding-top: 5px;
+  border-bottom: 1px solid #737F90;
+  font-weight: 600;
+}
+
 .search-result-empty-box .empty-text {
   font-size: 20px;
   line-height: 40px;
@@ -309,14 +338,12 @@ export default {
 .search-condition-box {
   border-top: solid 1px #DCDFE6;
   margin-bottom: 20px;
-  background: #FFffff;
   padding: 20px 20px 30px;
 }
 
 .search-input-box {
   padding: 20px;
   text-align: center;
-  background: #fff;
 }
 
 .search-box {
@@ -329,9 +356,11 @@ export default {
   margin-right: 20px;
 }
 
+.search-hot-word .wordCloud {
+  width: 100%;
+}
+
 .search-right-box {
   width: 300px;
-  height: 600px;
-  background-color: #409EFF;
 }
 </style>
