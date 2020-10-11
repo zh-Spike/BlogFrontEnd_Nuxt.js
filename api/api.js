@@ -75,6 +75,10 @@ export const checkToken = () => {
   return http.requestGet('/user/check_token');
 }
 
+export const doLogOut = () => {
+  return http.requestGet('/user/logout');
+}
+
 export const getLinkList = () => {
   if (process.client) {
     return http.requestGet('/portal/web_site_info/friend_link');
@@ -94,4 +98,8 @@ export const getSearchContent = (categoryId, keyword,
       '&keyword=' + encodeURIComponent(keyword) + '&page=' + page +
       '&size=' + size + '&sort=' + sort);
   }
+}
+
+export const getLoginQrCode = () => {
+  return http.requestGet('/user/pc_login_qr_code');
 }

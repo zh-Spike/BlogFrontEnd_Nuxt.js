@@ -50,7 +50,7 @@ export default {
     '/portal': {
       target: 'http://localhost:8082',
     },
-    '/user': {
+    '/user/': {
       target: 'http://localhost:8082',
     },
   },

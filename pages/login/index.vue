@@ -1,9 +1,29 @@
 <template>
   <div class="register-box">
     <div class="login-tip-text">
+      <span class="login-tip">
       登录
+      </span>
+      <span class="login-type" @click="toAccountLogin">
+      账号登陆
+      </span>
+      ·
+      <span class="login-type" @click="toScanLogin">
+      扫码
+      </span>
     </div>
-    <div class=" login-center-box">
+    <div class="login-center-qrCode-box" v-if="loginType==='1'">
+      <div class="login-qr-code">
+        <el-image
+          style="width: 160px; height: 160px; "
+          :src="qrCodeLoginImagePath"
+          :fit="fit"></el-image>
+      </div>
+      <div class="login-scan-tips">
+        请打开客户端App进行扫码登录
+      </div>
+    </div>
+    <div class=" login-center-box" v-if="loginType==='0'">
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form label-position="right" label-width="100px">
@@ -51,6 +71,9 @@ export default {
   },
   data() {
     return {
+      qrCodeLoginKey: '',
+      qrCodeLoginImagePath: '',
+      loginType: '0',
       isCommitting: false,
       originalPassword: '',
       user: {
@@ -59,10 +82,24 @@ export default {
       },
     }
   },
-  beforeMount() {
-    this.updateVerifyCode();
+  mounted() {
+    this.getLoginQrcode();
   },
   methods: {
+    toScanLogin() {
+      this.loginType = '1';
+    },
+    toAccountLogin() {
+      this.loginType = '0';
+    },
+    getLoginQrcode() {
+      api.getLoginQrCode().then(result => {
+        if (result.code === api.success_code) {
+          this.qrCodeLoginImagePath = result.data.url;
+          this.qrCodeLoginKey = result.data.code;
+        }
+      });
+    },
     doLogin() {
       // 发起登录
       // 检查数据
@@ -121,6 +158,32 @@ export default {
 </script>
 
 <style>
+.login-center-qrCode-box {
+  width: 250px;
+  margin-left: 50px;
+  text-align: center;
+}
+
+.login-scan-tips {
+  margin-top: 10px;
+  color: #999999;
+}
+
+.login-tip {
+  font-weight: 600;
+  font-size: 20px;
+  margin-right: 20px;
+}
+
+.login-type {
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.login-type:hover {
+  color: #A612FF;
+}
+
 .forget-tip-text a:hover {
   color: #A612FF;
 }
@@ -129,11 +192,13 @@ export default {
   color: #999999;
 }
 
+.forget-tip-text {
+  margin-left: 10px;
+}
+
 .login-tip-text {
   display: inline-block;
   margin-bottom: 20px;
-  font-weight: 600;
-  font-size: 20px;
   color: #999999;
 }
 
@@ -150,6 +215,10 @@ export default {
 
 .login-button {
   margin-bottom: 0;
+}
+
+.login-center-box {
+  margin-left: 65px;
 }
 
 .login-center-box .el-input {

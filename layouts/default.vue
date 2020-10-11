@@ -8,13 +8,39 @@
           </a>
         </div>
       </div>
-      <div class="login-tips-text-box float-right" v-if="userInfo===null">
+      <div id="login-tips-text-box" style="display: none;" class="login-tips-text-box float-right">
         <span>
           <a href="/login"><i class="sob_blog sobfingermap"> </i>登录</a>
         </span>
         <span>
           <a href="/register"><i class="sob_blog sobmembers-add"></i>注册</a>
         </span>
+      </div>
+      <div id="user-info-box" style="display: none" class="user-info-box float-right clear-fix">
+        <div class="header-right-box float-right">
+          <div class="header-user-info clearfix">
+            <div class="header-user-avatar float-left">
+              <img v-if="userInfo!=null" style="object-fit: cover"
+                   :src="userInfo.avatar">
+            </div>
+            <div class="header-user-name float-left" v-if="userInfo!=null">
+              <el-dropdown @command="handlerCommand">
+                        <span class="el-dropdown-link">
+                            {{ userInfo.userName }} <i class="el-icon-arrow-down el-icon--right"></i>
+                        </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item icon="el-icon-user" command="userInfo">用户信息</el-dropdown-item>
+                  <el-dropdown-item icon="el-icon-s-management" command="adminCenter"
+                                    v-if="userInfo.roles==='role_admin'">
+                    管理中心
+                  </el-dropdown-item>
+                  <el-dropdown-item icon="el-icon-orange" command="logout">退出登录
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="navigation-box float-right ">
         <NuxtLink to="/">
@@ -26,9 +52,6 @@
         <NuxtLink to="/link">
           <span><i class="sob_blog soblink"></i> 友链</span>
         </NuxtLink>
-        <div class="user-info-box float-right" v-if="userInfo!==null">
-          用户信息
-        </div>
       </div>
     </div>
     <Nuxt/>
@@ -57,10 +80,34 @@ import * as api from '@/api/api';
 
 export default {
   methods: {
+    handlerCommand(command) {
+      if (command === 'logout') {
+        api.doLogOut().then(result => {
+          if (result.code === api.success_code) {
+            // 跳转到登录页面
+            location.href = "/login";
+          }
+        })
+      } else if (command === 'adminCenter') {
+        location.href = "http://localhost:8080/"
+      } else if (command === 'userInfo') {
+        location.href = "/userInfo"
+      }
+    },
     checkToken() {
       api.checkToken().then(result => {
+        let loginTips = document.getElementById('login-tips-text-box');
+        let userInfoBox = document.getElementById('user-info-box');
         if (result.code === api.success_code) {
           this.userInfo = result.data;
+          if (userInfoBox) {
+            userInfoBox.style.display = 'block';
+          } else {
+            if (loginTips) {
+              // 控制顶部display
+              loginTips.style.display = 'block';
+            }
+          }
         }
       })
     },
@@ -107,7 +154,8 @@ h1 {
 }
 
 .navigation-box {
-  margin-right: 50px;
+  position: absolute;
+  right: 300px;
 }
 
 .login-tips-text-box span :hover {
@@ -159,6 +207,7 @@ a {
 }
 
 .blog-header {
+  position: relative;
   line-height: 30px;
   margin-top: 20px;
   background: #Fff;
@@ -180,5 +229,28 @@ body {
 .clear-fix {
   overflow: hidden;
   zoom: 1;
+}
+
+.header-user-info {
+  margin-right: 40px;
+}
+
+.header-user-name {
+  margin-left: 10px;
+}
+
+.header-user-name .el-dropdown-link {
+  font-size: 16px;
+  color: #737F90;
+  cursor: pointer;
+  font-weight: 600;
+  margin-left: 10px;
+}
+
+.header-user-avatar img {
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  vertical-align: middle;
 }
 </style>
