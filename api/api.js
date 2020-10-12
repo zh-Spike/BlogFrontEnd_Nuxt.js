@@ -5,6 +5,8 @@ const baseUrl = 'http://localhost:8082'
 
 export const success_code = 10000;
 export const failed_code = 40000;
+export const waiting_for_scan = 40005;
+export const qr_code_deprecate = 40006;
 
 export const getAdminInfo = () => {
   if (process.client) {
@@ -102,4 +104,8 @@ export const getSearchContent = (categoryId, keyword,
 
 export const getLoginQrCode = () => {
   return http.requestGet('/user/pc_login_qr_code');
+}
+
+export const checkScanLoginState = (loginId) => {
+  return http.requestGet('/user/qr_code_state/' + loginId);
 }

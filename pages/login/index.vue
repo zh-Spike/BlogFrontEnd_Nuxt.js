@@ -9,15 +9,22 @@
       </span>
       ·
       <span class="login-type" @click="toScanLogin">
-      扫码
+      扫码登录
       </span>
     </div>
     <div class="login-center-qrCode-box" v-if="loginType==='1'">
-      <div class="login-qr-code">
+      <div id="login-qr-code" class="login-qr-code">
         <el-image
+          ref="loginQrCode"
           style="width: 160px; height: 160px; "
           :src="qrCodeLoginImagePath"
-          :fit="fit"></el-image>
+          @error="onQrCodeLoadError">
+        </el-image>
+      </div>
+      <div id="login-qr-code-refresh" style="display: none;" @click="refreshQrCode">
+        <span>
+          <i class="el-icon-refresh"></i> 点击刷新二维码
+        </span>
       </div>
       <div class="login-scan-tips">
         请打开客户端App进行扫码登录
@@ -71,6 +78,7 @@ export default {
   },
   data() {
     return {
+      isScanStateChecking: false,
       qrCodeLoginKey: '',
       qrCodeLoginImagePath: '',
       loginType: '0',
@@ -83,22 +91,103 @@ export default {
     }
   },
   mounted() {
-    this.getLoginQrcode();
+
   },
   methods: {
+    checkLoginState() {
+      if (this.isScanStateChecking || this.loginType !== '1' || this.qrCodeLoginKey === '') {
+        return;
+      }
+      // 什么时机去查询
+      this.isScanStateChecking = true;
+      console.log('查询登陆状态...' + this.qrCodeLoginKey);
+      // 图片返回就查询
+      // 如果正查询就不需要查询
+      api.checkScanLoginState(this.qrCodeLoginKey).then(result => {
+        // 查询登录状态
+        console.log(result);
+        console.log('LBWNB');
+        // 处理结果 3种
+        let code = result.code;
+        console.log(code);
+        this.isScanStateChecking = false;
+        if (code === api.success_code) {
+          // 登陆成功
+          this.handleLoginSuccess(result);
+        } else if (code === api.qr_code_deprecate) {
+          // 扫码超时
+          this.onQrCodeLoadError();
+        } else if (code === api.waiting_for_scan) {
+          // 等待扫描
+          this.checkLoginState();
+        }
+      });
+    },
+    refreshQrCode() {
+      this.getLoginQrcode();
+    },
+    onQrCodeLoadError() {
+      this.qrCodeLoginKey = '';
+      this.qrCodeLoginImagePath = '';
+      // 二维码加载失败
+      // 显示刷新
+      let qrCodeBox = document.getElementById('login-qr-code');
+      if (qrCodeBox) {
+        qrCodeBox.style.display = 'none';
+      }
+      let refreshBox = document.getElementById('login-qr-code-refresh');
+      if (refreshBox) {
+        refreshBox.style.display = 'block';
+      }
+    },
     toScanLogin() {
+      if (this.qrCodeLoginKey === '') {
+        this.getLoginQrcode();
+      }
       this.loginType = '1';
     },
     toAccountLogin() {
+      // 清空图片和key 下次在切换的时候 重新拉取新的二维码
+      this.qrCodeLoginKey = '';
+      this.qrCodeLoginImagePath = '';
       this.loginType = '0';
     },
     getLoginQrcode() {
       api.getLoginQrCode().then(result => {
+        console.log(result);
+        let qrCodeBox = document.getElementById('login-qr-code');
+        let refreshBox = document.getElementById('login-qr-code-refresh');
         if (result.code === api.success_code) {
           this.qrCodeLoginImagePath = result.data.url;
           this.qrCodeLoginKey = result.data.code;
+          // 控制refresh和原本的显示和隐藏
+          if (qrCodeBox) {
+            // 让控件重新加载图片
+            this.$refs.loginQrCode.error = false;
+            qrCodeBox.style.display = 'block';
+            this.checkLoginState();
+          }
+          if (refreshBox) {
+            refreshBox.style.display = 'none';
+          }
         }
       });
+    },
+    handleLoginSuccess(result) {
+      this.$message({
+        message: result.message,
+        center: true,
+        type: 'success'
+      })
+      // this.$router.push({path: '/index'});
+      // 从地址中获得redirect
+      let redirect = this.$route.query.redirect;
+      if (redirect) {
+        location.href = redirect;
+      } else {
+        // 如果没有就跳转到首页
+        location.href = "/";
+      }
     },
     doLogin() {
       // 发起登录
@@ -124,23 +213,10 @@ export default {
       api.doLogin(this.loginInfo.verifyCode, this.loginInfo.captcha_key, this.user).then(result => {
         // 处理登陆结果
         // 判断状态
-        console.log(result);
+        // console.log(result);
+        this.isCommitting = false;
         if (result.code === api.success_code) {
-          this.isCommitting = false;
-          this.$message({
-            message: result.message,
-            center: true,
-            type: 'success'
-          })
-          // this.$router.push({path: '/index'});
-          // 从地址中获得redirect
-          let redirect = this.$route.query.redirect;
-          if (redirect) {
-            location.href = redirect;
-          } else {
-            // 如果没有就跳转到首页
-            location.href = "/";
-          }
+          this.handleLoginSuccess(result);
         } else {
           // 其他则给出提示
           // 更新验证码
@@ -158,8 +234,24 @@ export default {
 </script>
 
 <style>
+#login-qr-code-refresh span {
+  line-height: 164px;
+  width: 160px;
+  display: inline-block;
+  background: #F7F7F7;
+  height: 160px;
+  cursor: pointer;
+}
+
+#login-qr-code-refresh {
+  width: 250px;
+  height: 164px;
+  text-align: center;
+}
+
 .login-center-qrCode-box {
   width: 250px;
+  height: 194px;
   margin-left: 50px;
   text-align: center;
 }

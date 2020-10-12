@@ -1,6 +1,6 @@
 <template>
   <div id="blog-box">
-    <div id="blog-header" class="blog-header clear-fix default-border-radius">
+    <div id='blog-header' class="blog-header clear-fix default-border-radius">
       <div class="logo-box float-left">
         <div class="logo">
           <a href="/">
@@ -16,7 +16,7 @@
           <a href="/register"><i class="sob_blog sobmembers-add"></i>注册</a>
         </span>
       </div>
-      <div id="user-info-box" style="display: none" class="user-info-box float-right clear-fix">
+      <div id="user-info-box" style="display: none;" class="user-info-box float-right clear-fix">
         <div class="header-right-box float-right">
           <div class="header-user-info clearfix">
             <div class="header-user-avatar float-left">
@@ -102,11 +102,11 @@ export default {
           this.userInfo = result.data;
           if (userInfoBox) {
             userInfoBox.style.display = 'block';
-          } else {
-            if (loginTips) {
-              // 控制顶部display
-              loginTips.style.display = 'block';
-            }
+          }
+        } else {
+          if (loginTips) {
+            // 控制顶部display
+            loginTips.style.display = 'block';
           }
         }
       })
@@ -155,7 +155,7 @@ h1 {
 
 .navigation-box {
   position: absolute;
-  right: 300px;
+  right: 220px;
 }
 
 .login-tips-text-box span :hover {
