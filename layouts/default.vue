@@ -10,7 +10,7 @@
       </div>
       <div id="login-tips-text-box" style="display: none;" class="login-tips-text-box float-right">
         <span>
-          <a href="/login"><i class="sob_blog sobfingermap"> </i>登录</a>
+          <a :href="'/login'+redirectPath"><i class="sob_blog sobfingermap"> </i>登录</a>
         </span>
         <span>
           <a href="/register"><i class="sob_blog sobmembers-add"></i>注册</a>
@@ -113,10 +113,21 @@ export default {
     },
   },
   mounted() {
+    console.log(this.$route.path);
+    if (this.redirectPath !== '?redirect=' + location.href &&
+      this.$route.path !== '/' &&
+      this.$route.path !== '/login' &&
+      this.$route.path !== '/forget' &&
+      this.$route.path !== '/register') {
+      // 排除一些特殊的
+      // 首页 login
+      this.redirectPath = '?redirect=' + location.href;
+    }
     this.checkToken();
   },
   data() {
     return {
+      redirectPath: '',
       userInfo: null
     }
   }
@@ -232,7 +243,7 @@ body {
 }
 
 .header-user-info {
-  margin-right: 40px;
+  margin-right: 10px;
 }
 
 .header-user-name {

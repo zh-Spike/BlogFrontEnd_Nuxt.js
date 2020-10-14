@@ -1,12 +1,13 @@
 import http from "@/api/http";
-import el from "element-ui/src/locale/lang/el";
 
 const baseUrl = 'http://localhost:8082'
 
 export const success_code = 10000;
+export const scan_code = 60002;
 export const failed_code = 40000;
 export const waiting_for_scan = 40005;
 export const qr_code_deprecate = 40006;
+export const join_in_success = 60001;
 
 export const getAdminInfo = () => {
   if (process.client) {
@@ -69,8 +70,8 @@ export const getArticles = (categoryId, page, size) => {
   }
 }
 
-export const doLogin = (verifyCode, captchaKey, user) => {
-  return http.requestPost('/user/login/' + verifyCode + '/' + captchaKey + '?from=p_', user);
+export const doLogin = (verifyCode, user) => {
+  return http.requestPost('/user/login/' + verifyCode + '/' + '?from=p_', user);
 }
 
 export const checkToken = () => {
@@ -108,4 +109,18 @@ export const getLoginQrCode = () => {
 
 export const checkScanLoginState = (loginId) => {
   return http.requestGet('/user/qr_code_state/' + loginId);
+}
+
+export const sendEmailCode = (captchaCode, email, type) => {
+  return http.requestGet('/user/verify_code?captchaCode=' + captchaCode
+    + '&email=' + email + '&type=' + type);
+}
+
+export const checkUserName = (userName) => {
+  return http.requestGet('/user/user_name?userName=' + userName);
+}
+
+export const registerUser = (captchaCode, emailCode, user) => {
+  return http.requestPost('/user/sign_up?captcha_code=' + captchaCode
+    + '&email_code=' + emailCode, user);
 }

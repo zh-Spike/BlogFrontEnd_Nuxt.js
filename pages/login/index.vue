@@ -1,5 +1,5 @@
 <template>
-  <div class="register-box">
+  <div class="login-box">
     <div class="login-tip-text">
       <span class="login-tip">
       登录
@@ -67,13 +67,11 @@ import * as api from '@/api/api';
 
 export default {
   asyncData() {
-    let tempKey = Date.parse(new Date());
     return {
       loginInfo: {
         verifyCode: '',
-        captcha_key: tempKey,
       },
-      captchaPath: 'http://localhost:8082/user/captcha?captcha_key=' + tempKey,
+      captchaPath: '/user/captcha',
     }
   },
   data() {
@@ -106,12 +104,11 @@ export default {
       api.checkScanLoginState(this.qrCodeLoginKey).then(result => {
         // 查询登录状态
         console.log(result);
-        console.log('LBWNB');
         // 处理结果 3种
         let code = result.code;
         console.log(code);
         this.isScanStateChecking = false;
-        if (code === api.success_code) {
+        if (code === api.scan_code) {
           // 登陆成功
           this.handleLoginSuccess(result);
         } else if (code === api.qr_code_deprecate) {
@@ -171,7 +168,10 @@ export default {
             refreshBox.style.display = 'none';
           }
         }
-      });
+      }).catch(error => {
+          console.log(error);
+        }
+      );
     },
     handleLoginSuccess(result) {
       this.$message({
@@ -210,7 +210,7 @@ export default {
       this.isCommitting = true;
       this.user.password = hex_md5(this.originalPassword);
       // 向服务器提交数据
-      api.doLogin(this.loginInfo.verifyCode, this.loginInfo.captcha_key, this.user).then(result => {
+      api.doLogin(this.loginInfo.verifyCode, this.user).then(result => {
         // 处理登陆结果
         // 判断状态
         // console.log(result);
@@ -226,7 +226,7 @@ export default {
       });
     },
     updateVerifyCode() {
-      this.captchaPath = 'http://localhost:8082/user/captcha?captcha_key=' + this.loginInfo.captcha_key + "&random" + Date.parse(new Date());
+      this.captchaPath = '/user/captcha' + "?random=" + Date.parse(new Date());
       // console.log(this.captchaPath);
     },
   }
@@ -317,7 +317,7 @@ export default {
   width: 200px;
 }
 
-.register-box {
+.login-box {
   border-radius: 4px;
   margin-bottom: 20px;
   padding: 20px;
