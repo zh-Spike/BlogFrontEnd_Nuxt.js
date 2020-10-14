@@ -14,7 +14,6 @@
           </el-form-item>
           <el-form-item
             required
-
             label="邮箱地址">
             <el-input placeholder="请输入邮箱地址" v-model="user.email"></el-input>
             <el-button v-if="!isCountDowning" type="primary" @click="getVerifyCode"
@@ -44,7 +43,6 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="doRegister">注册</el-button>
-            <el-button @click="reset">重置</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -173,6 +171,7 @@ export default {
         } else {
           // 否则给出提示
           this.$message.error(result.message);
+          this.updateVerifyCode();
         }
       })
     },
@@ -221,6 +220,10 @@ export default {
   vertical-align: middle;
   margin-left: 10px;
   border: #e6e6e6 solid 1px;
+}
+
+.email-get-verify-code-btn {
+  margin-left: 10px;
 }
 
 .get-verify-code-btn {

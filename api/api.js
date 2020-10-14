@@ -124,3 +124,12 @@ export const registerUser = (captchaCode, emailCode, user) => {
   return http.requestPost('/user/sign_up?captcha_code=' + captchaCode
     + '&email_code=' + emailCode, user);
 }
+
+export const checkVerifyCode = (captchaCode, email, emailCode) => {
+  return http.requestGet('/user/check_email_code?captchaCode=' + captchaCode
+    + '&email=' + email + '&emailCode=' + emailCode);
+}
+
+export const updatePassword = (verifyCode, user) => {
+  return http.requestPut('/user/password/' + verifyCode, user);
+}
