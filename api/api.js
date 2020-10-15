@@ -137,3 +137,6 @@ export const updatePassword = (verifyCode, user) => {
 export const getArticleDetailById = (articleId) => {
   return http.requestGet(baseUrl + '/portal/article/' + articleId);
 }
+export const getRecommendArticle = (articleId, size) => {
+  return http.requestGet(baseUrl + '/portal/article/recommend/' + articleId + '/' + size);
+}

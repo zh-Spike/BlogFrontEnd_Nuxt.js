@@ -42,11 +42,9 @@
             <div class="search-result-item" v-for="(item,index) in searchResult.contents" :key="index">
               <a :href="'/article/'+item.id">
                 <div class="result-item-title" v-html="item.blogTitle">
-
                 </div>
               </a>
               <div class="result-item-content" v-html="item.blogContent">
-
               </div>
               <div class="search-info-box">
               <span class="sob_blog sobicon">
@@ -166,7 +164,6 @@ export default {
         // 浏览量的倒序顺序
         sort = '3';
       }
-
       // 时间的倒序顺序
       location.href = "/search?keyword=" + encodeURIComponent(this.keyword) + '&sort=' + sort + '&categoryId=' + this.categoryId;
     },
@@ -193,7 +190,7 @@ export default {
   color: #909399;
   padding-bottom: 15px;
   padding-top: 5px;
-  border-bottom: 1px solid #737F90;
+  border-bottom: 1px solid #d7d8db;
   font-weight: 600;
 }
 
