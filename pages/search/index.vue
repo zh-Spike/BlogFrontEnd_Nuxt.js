@@ -40,9 +40,11 @@
           </div>
           <div class="search-result-list-box" v-if="searchResult.contents.length!==0">
             <div class="search-result-item" v-for="(item,index) in searchResult.contents" :key="index">
-              <div class="result-item-title" v-html="item.blogTitle">
+              <a :href="'/article/'+item.id">
+                <div class="result-item-title" v-html="item.blogTitle">
 
-              </div>
+                </div>
+              </a>
               <div class="result-item-content" v-html="item.blogContent">
 
               </div>

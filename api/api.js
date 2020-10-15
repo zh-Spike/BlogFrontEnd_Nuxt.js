@@ -133,3 +133,7 @@ export const checkVerifyCode = (captchaCode, email, emailCode) => {
 export const updatePassword = (verifyCode, user) => {
   return http.requestPut('/user/password/' + verifyCode, user);
 }
+
+export const getArticleDetailById = (articleId) => {
+  return http.requestGet(baseUrl + '/portal/article/' + articleId);
+}

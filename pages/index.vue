@@ -61,7 +61,9 @@
           <div class="article-left float-left">
             <div class="article-title">
               <span class="top-tips">置顶</span>
-              <span class="title">{{ item.title }}</span>
+              <span class="title">
+               <a :href="'/article/' + item.id">{{ item.title }} </a>
+              </span>
             </div>
             <div class="article-summary ">
               <p>
@@ -92,7 +94,9 @@
         <div class="article-item default-border-radius clear-fix" v-for="(item,index) in articles" :key="index">
           <div class="article-left float-left">
             <div class="article-title">
-              <span class="title">{{ item.title }}</span>
+              <div class="title">
+                <a :href="'/article/' + item.id">{{ item.title }}</a>
+              </div>
             </div>
             <div class="article-summary ">
               <p>
@@ -519,11 +523,11 @@ export default {
   padding: 10px;
 }
 
-.article-title .title:hover {
+.article-title .title a:hover {
   color: #A612FF;
 }
 
-.article-title .title {
+.article-title .title a {
   color: #409EFF;
   cursor: pointer;
   font-size: 20px;
