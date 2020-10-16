@@ -192,8 +192,8 @@ export default function (opts) {
         !T.classList.contains(Opt.linkActiveClass) &&
         Opt.activeHook.call(this, T);
         T.classList.add(Opt.linkActiveClass);
-        if (T.offsetTop > 300) {
-          $catalog.scrollTop = T.offsetTop - 300;
+        if (T.offsetTop > 500) {
+          $catalog.scrollTop = T.offsetTop - 500;
         } else {
           $catalog.scrollTop = 0;
         }

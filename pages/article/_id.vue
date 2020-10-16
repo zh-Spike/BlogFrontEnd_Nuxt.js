@@ -158,34 +158,32 @@ export default {
       let scrolledTop = document.documentElement.scrollTop;
       let scrolledLeft = document.documentElement.scrollLeft;
       let labelsBox = document.getElementById('article-content-labels');
-      let searchBox = document.getElementById('article-content-search');
+      let categoryBox = document.getElementById('article-content-category');
       let parentPart = document.getElementById('article-box');
-      if (searchBox) {
-        let bottomOfSearch = searchBox.offsetTop + searchBox.offsetHeight;
+      if (labelsBox) {
+        let bottomOfSearch = labelsBox.offsetTop + labelsBox.offsetHeight;
         if (scrolledTop >= bottomOfSearch) {
           // console.log('显示内容');
-          labelsBox.style.position = 'fixed';
-          labelsBox.style.marginLeft = '20px';
-          labelsBox.style.top = '20px';
-          labelsBox.style.padding = '10px';
-          labelsBox.style.width = '300px';
+          categoryBox.style.position = 'fixed';
+          categoryBox.style.top = '20px';
+          categoryBox.style.width = '280px';
         } else {
-          labelsBox.style.position = '';
-          labelsBox.style.marginLeft = '';
-          labelsBox.style.top = '';
-          labelsBox.style.width = 'auto';
+          // categoryBox.style.width = 'auto';
           // console.log('隐藏');
+          categoryBox.style.position = '';
+          categoryBox.style.marginLeft = '';
+          categoryBox.style.top = '';
         }
         // 处理左右
         if (scrolledLeft < 0) {
-          labelsBox.style.left = parentPart.offsetWidth
+          categoryBox.style.left = parentPart.offsetWidth
             + parentPart.offsetLeft
-            + labelsBox.offsetWidth
+            + categoryBox.offsetWidth
             + 'px';
         } else {
-          labelsBox.style.left = parentPart.offsetWidth
+          categoryBox.style.left = parentPart.offsetWidth
             + parentPart.offsetLeft
-            - labelsBox.offsetWidth
+            - categoryBox.offsetWidth
             - scrolledLeft
             + 'px';
         }
@@ -214,6 +212,32 @@ export default {
 </script>
 
 <style>
+#article-catalog-container {
+  max-height: 500px;
+  overflow: hidden;
+}
+
+.cl-link > span:hover {
+  color: #A612FF;
+}
+
+.cl-link > span {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+}
+
+.cl-link-active > span {
+  color: #A612FF !important;
+  background: #F2F2F2;
+  display: block;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+}
+
 #article-catalog-container ul {
   margin-left: 10px;
   line-height: 30px;
@@ -234,8 +258,8 @@ export default {
   font-weight: 600;
 }
 
-#article-content-category-box li:hover, #article-catalog-container li:hover {
-  color: #A612FF;
+#article-content-category-box li > span, #article-catalog-container li > span {
+  padding-left: 5px;
 }
 
 #article-content-category-box li, #article-catalog-container li {
@@ -364,6 +388,7 @@ export default {
 
 .article-content img {
   padding: 10px 0;
+  max-width: 780px;
   cursor: zoom-in;
 }
 
@@ -398,10 +423,6 @@ export default {
 
 .article-content {
   margin-top: 20px;
-}
-
-.article-content img {
-  max-width: 740px;
 }
 
 .article-labels .el-tag {
@@ -444,7 +465,7 @@ export default {
 
 .article-left-part {
   margin-right: 20px;
-  width: 780px;
+  width: 820px;
 }
 
 .article-right-part {
