@@ -29,7 +29,57 @@
           </div>
         </div>
         <div class="article-comment-box">
-
+          <div class="article-comment-input">
+            <div class="comment-input-header">
+              评论输入
+            </div>
+            <el-input
+              rows="4"
+              type="textarea"
+              placeholder="请文明评论"
+              v-model="comment.content"
+              maxlength="256"
+              show-word-limit>
+            </el-input>
+            <div class="comment-submit-btn">
+              <el-button type="primary" size="medium">评论</el-button>
+            </div>
+          </div>
+          <div class="article-comment-list">
+            <div class="comment-list-header">
+              文章评论
+            </div>
+            <div class="comment-item-list">
+              <div class="article-comment-item" v-for="(item,index) in commentList" :key="index">
+                <div class="article-comment-user-info">
+                  <img :src="item.userAvatar">
+                  <span class="user-name">{{ item.userName }}</span>
+                </div>
+                <div class="article-comment-reply" v-if="item.parentContent!==null">
+                  <span>回复: {{ item.parentContent }}</span>
+                </div>
+                <div class="article-comment-content">
+                  {{ item.content }}
+                </div>
+                <div class="article-comment-action">
+                <span class="el-icon-date">
+                  {{ item.createTime | formatDate("yyyy-MM-dd hh:mm") }}
+                </span>
+                  ·
+                  <span class="item-reply-btn">
+                  回复
+                </span>
+                </div>
+              </div>
+              <div class="no-comment-content" v-if="commentList.length===0">
+                暂时没用评论,快来评论吧
+                "┗|｀O′|┛ 嗷~~"
+              </div>
+              <div class="loader-more-comment" v-if="!isLastPage">
+                加载更多评论 >>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="article-recommend-box">
           <div class="recommend-header-title">
@@ -84,7 +134,6 @@
             文章目录
           </div>
           <div class="right-card-content" id="article-catalog-container">
-
           </div>
         </div>
       </div>
@@ -107,6 +156,9 @@ import Catelog from '@/utils/headerLineHandler';
 export default {
   data() {
     return {
+      comment: {
+        content: '',
+      },
       isImageDialogShow: false,
       targetImagePath: '',
       keyword: '',
@@ -118,12 +170,17 @@ export default {
   async asyncData({params}) {
     let articleResult = await api.getArticleDetailById(params.id);
     let recommendArticle = await api.getRecommendArticle(articleResult.data.id, 10);
+    let commentRes = await api.getCommentByArticleId(articleResult.data.id, 1, 10);
     // console.log(recommendArticle.data);
     // console.log('test....');
     // console.log(params.id);
+    // console.log(commentRes.data.contents);
+
     return {
       articleRes: articleResult.data,
-      recommendArticleRes: recommendArticle.data
+      recommendArticleRes: recommendArticle.data,
+      commentList: commentRes.data.contents,
+      isLastPage: commentRes.data.last,
     };
 
   },
@@ -212,6 +269,65 @@ export default {
 </script>
 
 <style>
+.comment-submit-btn {
+  margin-top: 10px;
+  text-align: right;
+}
+
+.article-comment-input {
+  padding: 20px;
+  background: #fff;
+  margin-bottom: 20px;
+}
+
+.loader-more-comment, .no-comment-content {
+  text-align: center;
+  padding: 10px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.item-reply-btn:hover, .loader-more-comment:hover {
+  color: #A612FF;
+}
+
+.item-reply-btn {
+  cursor: pointer;
+}
+
+.article-comment-reply {
+  padding: 10px;
+  background: #F5F5F5;
+  margin-left: 30px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+}
+
+.article-comment-content {
+  padding: 10px;
+  margin-left: 30px;
+}
+
+.article-comment-action {
+  color: #7f828b;
+  text-align: right;
+}
+
+.article-comment-item {
+  padding: 10px 0;
+  border-bottom: #F5F5F5 solid 1px;
+}
+
+.article-comment-user-info img {
+  width: 30px;
+  height: 30px;
+  display: inline-block;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+
 #article-catalog-container {
   max-height: 500px;
   overflow: hidden;
@@ -273,7 +389,21 @@ export default {
   line-height: 30px;
 }
 
-.recommend-header-title {
+.comment-item-list {
+  margin-top: 10px;
+}
+
+.article-comment-list {
+  background: #fff;
+  margin-bottom: 20px;
+  padding: 20px;
+}
+
+.comment-input-header {
+  padding: 0 0 20px;
+}
+
+.recommend-header-title, .comment-input-header, .comment-list-header {
   font-size: 20px;
   font-weight: 600;
   color: #409EFF;
@@ -299,6 +429,23 @@ export default {
 
 .article-labels a {
   color: #7f828b;
+}
+
+.article-comment-user-info .user-name:hover {
+  color: #A612FF;
+}
+
+.article-comment-user-info .user-name {
+  font-weight: 600;
+  margin-left: 5px;
+  display: inline-block;
+  line-height: 30px;
+  font-size: 14px;
+  color: #7f828b;
+}
+
+.article-comment-user-info {
+  margin-bottom: 10px;
 }
 
 .recommend-info {

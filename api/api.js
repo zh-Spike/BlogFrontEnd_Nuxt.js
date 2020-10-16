@@ -137,6 +137,15 @@ export const updatePassword = (verifyCode, user) => {
 export const getArticleDetailById = (articleId) => {
   return http.requestGet(baseUrl + '/portal/article/' + articleId);
 }
+
 export const getRecommendArticle = (articleId, size) => {
   return http.requestGet(baseUrl + '/portal/article/recommend/' + articleId + '/' + size);
+}
+
+export const getCommentByArticleId = (articleId, page, size) => {
+  if (process.client) {
+    return http.requestGet('/portal/comment/list/' + articleId + '/' + page + '/' + size);
+  } else {
+    return http.requestGet(baseUrl + '/portal/comment/list/' + articleId + '/' + page + '/' + size);
+  }
 }
