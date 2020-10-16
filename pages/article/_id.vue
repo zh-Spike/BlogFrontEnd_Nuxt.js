@@ -34,6 +34,7 @@
               评论输入
             </div>
             <el-input
+              @focus="checkLogin"
               rows="4"
               type="textarea"
               placeholder="请文明评论"
@@ -42,7 +43,7 @@
               show-word-limit>
             </el-input>
             <div class="comment-submit-btn">
-              <el-button type="primary" size="medium">评论</el-button>
+              <el-button type="primary" size="medium" @click="doComment">评论</el-button>
             </div>
           </div>
           <div class="article-comment-list">
@@ -52,10 +53,15 @@
             <div class="comment-item-list">
               <div class="article-comment-item" v-for="(item,index) in commentList" :key="index">
                 <div class="article-comment-user-info">
-                  <img :src="item.userAvatar">
-                  <span class="user-name">{{ item.userName }}</span>
+                  <a :href="'/user/'+item.userId">
+                    <img :src="item.userAvatar">
+                    <span class="user-name">{{ item.userName }}</span>
+                  </a>
+                  <el-tag size="mini" type="danger" v-if="item.state==='3'">
+                    置顶
+                  </el-tag>
                 </div>
-                <div class="article-comment-reply" v-if="item.parentContent!==null">
+                <div class="article-comment-reply" v-if="item.parentContent!==null && item.parentContent!==''">
                   <span>回复: {{ item.parentContent }}</span>
                 </div>
                 <div class="article-comment-content">
@@ -75,7 +81,7 @@
                 暂时没用评论,快来评论吧
                 "┗|｀O′|┛ 嗷~~"
               </div>
-              <div class="loader-more-comment" v-if="!isLastPage">
+              <div class="loader-more-comment" v-if="!isLastPage" @click="doLoadMore">
                 加载更多评论 >>
               </div>
             </div>
@@ -158,10 +164,14 @@ export default {
     return {
       comment: {
         content: '',
+        articleId: '',
+        parentContent: '',
       },
       isImageDialogShow: false,
       targetImagePath: '',
       keyword: '',
+      currentPage: 1,
+      pageSize: 10,
     }
   },
   /*
@@ -182,9 +192,69 @@ export default {
       commentList: commentRes.data.contents,
       isLastPage: commentRes.data.last,
     };
-
   },
   methods: {
+    doLoadMore() {
+      this.currentPage++;
+      api.getCommentByArticleId(this.articleRes.id, this.currentPage, this.pageSize).then(result => {
+        if (result.code === api.success_code) {
+          // 处理成功的结果
+          this.commentList = this.commentList.concat(result.data.contents);
+          // 处理是否还有更多
+          this.isLastPage = result.data.last;
+        }
+      }).catch(error => {
+        console.log(error);
+      });
+    },
+    checkLogin() {
+      api.checkToken().then(result => {
+        // console.log(result);
+        if (result.code === api.failed_code) {
+          // 跳转到登录页面
+          location.href = "/login?redirect=" + location.href;
+        }
+      });
+    },
+    doComment() {
+      // 检查是否登陆过 只检查token
+      let blogTokenIndex = document.cookie.indexOf('blog_token');
+      // console.log('blogTokenIndex' + blogTokenIndex);
+      if (blogTokenIndex === -1) {
+        location.href = "/login?redirect=" + location.href;
+        return;
+      }
+      // 检查内容
+      if (this.comment.content === '') {
+        this.$message.error('您没有填写任何评论内容呢!');
+        return;
+      }
+      // 补全数据
+      this.comment.articleId = this.articleRes.id;
+      // 提交数据
+      // console.log(this.comment);
+      api.postComment(this.comment).then(result => {
+        if (result.code === api.success_code) {
+          // 刷新评论
+          this.getArticleCommentByPage(1);
+          this.resetComment();
+          this.$message.success(result.message);
+        } else {
+          this.$message.error(result.message);
+        }
+      })
+    },
+    resetComment() {
+      this.comment.content = '';
+      this.comment.parentContent = '';
+    },
+    getArticleCommentByPage(page) {
+      api.getCommentByArticleId(this.articleRes.id, page, this.pageSize).then(result => {
+        this.commentList = result.data.contents;
+        // 处理页码
+        this.currentPage = page;
+      })
+    },
     handleContentImages() {
       document.getElementById('article-content');
       // 遍历图片
@@ -312,6 +382,7 @@ export default {
 
 .article-comment-action {
   color: #7f828b;
+  margin-right: 20px;
   text-align: right;
 }
 

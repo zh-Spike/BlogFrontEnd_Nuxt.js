@@ -149,3 +149,7 @@ export const getCommentByArticleId = (articleId, page, size) => {
     return http.requestGet(baseUrl + '/portal/comment/list/' + articleId + '/' + page + '/' + size);
   }
 }
+
+export const postComment = (articleComment) => {
+  return http.requestPost('/portal/comment', articleComment);
+}
