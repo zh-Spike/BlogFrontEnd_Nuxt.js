@@ -1,5 +1,15 @@
 <template>
   <div id="blog-box">
+    <el-backtop  :bottom="100">
+      <div class="el-icon-arrow-up"
+        style="{
+        height: 100%;
+        text-align: center;
+        line-height: 40px;
+        color: #1989fa;
+      }">UP
+      </div>
+    </el-backtop>
     <div id='blog-header' class="blog-header clear-fix default-border-radius">
       <div class="logo-box float-left">
         <div class="logo">
@@ -69,12 +79,17 @@
           (2020--?)本网站用❤来发电
         </p>
       </div>
-      <div>
-        <span>关于我们</span>
+      <div class="bottom-link">
+        <span>
+          <a href="/about" target="_blank">关于我们</a>
+        </span>
         |
-        <span>联系我们</span>
+        <span>
+          <a href="/about#contacts" target="_blank">联系我们</a>
+        </span>
         |
-        <span>友情链接</span>
+        <span><a href="link" target="_blank">友情链接</a>
+        </span>
       </div>
     </div>
   </div>
@@ -137,7 +152,21 @@ export default {
   }
 }
 </script>
+
 <style>
+.bottom-link a:hover, .copy-right-box a:hover {
+  color: #A612FF;
+  cursor: pointer;
+}
+
+.copy-right-box a {
+  color: #7f828b;
+}
+
+.bottom-link a {
+  color: #7f828b;
+}
+
 .header-title-activity {
   color: #A612FF !important;
 }
@@ -271,5 +300,10 @@ body {
   width: 30px;
   border-radius: 50%;
   vertical-align: middle;
+}
+
+.el-backtop{
+  width: 80px;
+  height: 80px;
 }
 </style>
