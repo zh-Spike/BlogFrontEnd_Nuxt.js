@@ -56,6 +56,9 @@ import * as api from "@/api/api";
 import {hex_md5} from "@/utils/md5";
 
 export default {
+  mounted() {
+    this.$store.commit("setCurrentActivityTab", "index");
+  },
   data() {
     return {
       showType: 'verifyCode',

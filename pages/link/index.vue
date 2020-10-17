@@ -17,6 +17,9 @@
 import * as api from '@/api/api';
 
 export default {
+  mounted() {
+    this.$store.commit("setCurrentActivityTab", "link");
+  },
   asyncData() {
     return api.getLinkList().then(result => {
       console.log(result.data);

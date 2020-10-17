@@ -44,13 +44,17 @@
       </div>
       <div class="navigation-box float-right ">
         <NuxtLink to="/">
-          <span><i class="sob_blog sobhome"></i> 首页</span>
+          <span :class="$store.state.currentActivityTab==='index'?'header-title-activity':''">
+            <i class="sob_blog sobhome"></i> 首页</span>
         </NuxtLink>
         <NuxtLink to="/about">
-          <span><i class="sob_blog sobabout_line"></i> 关于</span>
+          <span :class="$store.state.currentActivityTab==='about'?'header-title-activity':''">
+            <i class="sob_blog sobabout_line"></i> 关于</span>
         </NuxtLink>
         <NuxtLink to="/link">
-          <span><i class="sob_blog soblink"></i> 友链</span>
+          <span :class="$store.state.currentActivityTab==='link'?'header-title-activity':''">
+            <i class="sob_blog soblink">
+          </i> 友链</span>
         </NuxtLink>
       </div>
     </div>
@@ -134,6 +138,10 @@ export default {
 }
 </script>
 <style>
+.header-title-activity {
+  color: #A612FF !important;
+}
+
 h1 {
   color: #737F90;
   font-size: 24px;

@@ -170,6 +170,9 @@ export default {
     toSearchPage() {
       location.href = "/search?keyword=" + encodeURIComponent(this.keyword);
     },
+  },
+  mounted() {
+    this.$store.commit("setCurrentActivityTab", "index");
   }
 }
 

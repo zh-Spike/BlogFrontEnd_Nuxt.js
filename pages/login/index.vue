@@ -89,7 +89,7 @@ export default {
     }
   },
   mounted() {
-
+    this.$store.commit("setCurrentActivityTab", "index");
   },
   methods: {
     checkLoginState() {

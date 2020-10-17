@@ -207,6 +207,10 @@ export default {
     }
   },
   mounted() {
+    this.$store.commit("setCurrentActivityTab", "index");
+    // console.log(this.$store.state.currentActivityTab);
+    // this.$store.commit("setCurrentActivityTab", "about");
+    // console.log(this.$store.state.currentActivityTab);
     this.listAppointments();
     this.checkToken();
     window.addEventListener('scroll', this.onWindowScroll);
