@@ -365,7 +365,7 @@ export default {
     let loopRes = await api.getLoop();
     let topArticleRes = await api.getTopArticle();
     // 在服务器渲染
-    let articlesRes = await api.getArticles('', 1, 10);
+    let articlesRes = await api.getArticles('', 1, 30);
     let pageNavigation = {
       currentPage: articlesRes.data.currentPage,
       totalCount: articlesRes.data.totalCount,

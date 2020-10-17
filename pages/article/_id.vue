@@ -46,7 +46,7 @@
               <el-button type="primary" size="medium" @click="doComment">评论</el-button>
             </div>
           </div>
-          <div class="article-comment-list">
+          <div class="article-comment-list" id="article-comment-list">
             <div class="comment-list-header">
               文章评论
             </div>
@@ -62,7 +62,7 @@
                   </el-tag>
                 </div>
                 <div class="article-comment-reply" v-if="item.parentContent!==null && item.parentContent!==''">
-                  <span>回复: {{ item.parentContent }}</span>
+                  <span>回复@{{ item.userName }} :{{ item.parentContent }}</span>
                 </div>
                 <div class="article-comment-content">
                   {{ item.content }}
@@ -72,9 +72,27 @@
                   {{ item.createTime | formatDate("yyyy-MM-dd hh:mm") }}
                 </span>
                   ·
-                  <span class="item-reply-btn">
+                  <span class="item-reply-btn" @click="onReplyClick(index,item.userName)">
                   回复
                 </span>
+                </div>
+                <div class="article-sub-comment-box clear-fix" style="display: none" :id="'sub_input_'+index">
+                  <div class="sub-comment-input float-left">
+                    <el-input
+                      @focus="checkLogin"
+                      rows="2"
+                      type="textarea"
+                      :placeholder="subCommentPlaceHolder"
+                      v-model="subComment"
+                      maxlength="256"
+                      show-word-limit>
+                    </el-input>
+                  </div>
+                  <div class="sub-comment-btn float-left">
+                    <el-button size="mini" type="primary" @click="doSubComment(item.content)">
+                      回复
+                    </el-button>
+                  </div>
                 </div>
               </div>
               <div class="no-comment-content" v-if="commentList.length===0">
@@ -159,9 +177,11 @@ import hljs from 'highlight.js';
 import 'highlight.js/styles/atom-one-dark-reasonable.css';
 import Catelog from '@/utils/headerLineHandler';
 
+let lastInputBox = null;
 export default {
   data() {
     return {
+      subComment: '',
       comment: {
         content: '',
         articleId: '',
@@ -172,6 +192,7 @@ export default {
       keyword: '',
       currentPage: 1,
       pageSize: 10,
+      subCommentPlaceHolder: '请文明回复',
     }
   },
   /*
@@ -194,6 +215,48 @@ export default {
     };
   },
   methods: {
+    doSubComment(parentContent) {
+      // 检查数据
+      if (this.subComment === '') {
+        this.$message.error("您还没填写回复内容呢!");
+        return;
+      }
+      // 处理数据
+      this.comment.content = this.subComment;
+      this.comment.articleId = this.articleRes.id;
+      this.comment.parentContent = parentContent;
+      api.postComment(this.comment).then(result => {
+        if (result.code === api.success_code) {
+          // 刷新评论
+          this.getArticleCommentByPage(1);
+          this.resetComment();
+          this.$message.success(result.message);
+          let commentList = document.getElementById('article-comment-list');
+          // console.log(commentList);
+          if (commentList) {
+            commentList.scrollIntoView({
+              block: 'start',
+              behavior: 'auto'
+            })
+          }
+        } else {
+          this.$message.error(result.message);
+        }
+      })
+    },
+    onReplyClick(index, userName) {
+      // console.log(index);
+      let subInputBox = document.getElementById('sub_input_' + index);
+      this.subComment = '';
+      this.subCommentPlaceHolder = '回复@' + userName;
+      if (subInputBox) {
+        if (lastInputBox) {
+          lastInputBox.style.display = 'none';
+        }
+        lastInputBox = subInputBox;
+        subInputBox.style.display = 'block';
+      }
+    },
     doLoadMore() {
       this.currentPage++;
       api.getCommentByArticleId(this.articleRes.id, this.currentPage, this.pageSize).then(result => {
@@ -247,6 +310,10 @@ export default {
     resetComment() {
       this.comment.content = '';
       this.comment.parentContent = '';
+      this.subComment = '';
+      if (lastInputBox) {
+        lastInputBox.style.display = 'none';
+      }
     },
     getArticleCommentByPage(page) {
       api.getCommentByArticleId(this.articleRes.id, page, this.pageSize).then(result => {
@@ -339,6 +406,20 @@ export default {
 </script>
 
 <style>
+.sub-comment-btn {
+  line-height: 54px;
+  margin-left: 10px;
+}
+
+.article-sub-comment-box {
+  margin-top: 10px;
+}
+
+.sub-comment-input {
+  width: 650px;
+  margin-left: 40px;
+}
+
 .comment-submit-btn {
   margin-top: 10px;
   text-align: right;
