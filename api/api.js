@@ -120,6 +120,10 @@ export const checkUserName = (userName) => {
   return http.requestGet('/user/user_name?userName=' + userName);
 }
 
+export const updateUserInfo = (user, userId) => {
+  return http.requestPut('/user/user_info/' + userId, user);
+}
+
 export const registerUser = (captchaCode, emailCode, user) => {
   return http.requestPost('/user/sign_up?captcha_code=' + captchaCode
     + '&email_code=' + emailCode, user);
@@ -152,4 +156,12 @@ export const getCommentByArticleId = (articleId, page, size) => {
 
 export const postComment = (articleComment) => {
   return http.requestPost('/portal/comment', articleComment);
+}
+
+export const getUserInfo = (userId) => {
+  if (process.client) {
+    return http.requestGet( '/user/user_info/' + userId);
+  }else {
+    return http.requestGet(baseUrl + '/user/user_info/' + userId);
+  }
 }

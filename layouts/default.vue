@@ -110,7 +110,7 @@ export default {
       } else if (command === 'adminCenter') {
         location.href = "http://localhost:8080/"
       } else if (command === 'userInfo') {
-        location.href = "/userInfo"
+        location.href = "/userInfo/" + this.userInfo.id;
       }
     },
     checkToken() {
@@ -118,7 +118,11 @@ export default {
         let loginTips = document.getElementById('login-tips-text-box');
         let userInfoBox = document.getElementById('user-info-box');
         if (result.code === api.success_code) {
+          // 获取状态
           this.userInfo = result.data;
+          // 获取状态后 通过状态树来共享
+          this.$store.commit("setCurrentUserId", this.userInfo.id);
+          // console.log(this.$store.state.currentUserId);
           if (userInfoBox) {
             userInfoBox.style.display = 'block';
           }
