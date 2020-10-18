@@ -440,6 +440,7 @@ export default {
 }
 
 .sign-box {
+  padding-top: 10px;
   border-radius: 4px;
 }
 

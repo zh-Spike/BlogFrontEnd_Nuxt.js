@@ -160,8 +160,20 @@ export const postComment = (articleComment) => {
 
 export const getUserInfo = (userId) => {
   if (process.client) {
-    return http.requestGet( '/user/user_info/' + userId);
-  }else {
+    return http.requestGet('/user/user_info/' + userId);
+  } else {
     return http.requestGet(baseUrl + '/user/user_info/' + userId);
   }
 }
+
+export const deleteAppointment = (deleteArticleId) => {
+  if (process.client) {
+    return http.requestDelete('/portal/appointment/' + deleteArticleId);
+  } else {
+    return http.requestDelete(baseUrl + '/portal/appointment/' + deleteArticleId);
+  }
+}
+// 添加预约
+export const postAppointment = (appointment) => {
+  return http.requestPost('/portal/appointment', appointment);
+};

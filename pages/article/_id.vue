@@ -22,10 +22,26 @@
               <a :href="'/search?keyword=' + item" target="_blank">{{ item }}</a>
             </el-tag>
           </div>
-          <div class="catalog-box" id="article-content-category-box">
+          <div class="article-loading-part" v-if="isArticleProcessing">
+            <div class="content-loading">
+              <div class="loading-title clear-fix"></div>
+              <div class="loading-content">
+                <div class="loading-text animation-delay"></div>
+                <div class="loading-text"></div>
+              </div>
+              <div class="loading-info clear-fix">
+                <div class="loading-type"></div>
+                <div class="loading-avatar"></div>
+                <div class="loading-nickname"></div>
+              </div>
+            </div>
+          </div>
+          <div class="catalog-box" id="article-content-category-box"
+               v-show="!isArticleProcessing">
 
           </div>
-          <div id="article-content" class="article-content" v-html="articleRes.content">
+          <div id="article-content" class="article-content" v-html="articleRes.content"
+               v-show="!isArticleProcessing">
           </div>
         </div>
         <div class="article-comment-box">
@@ -198,6 +214,7 @@ export default {
   },
   data() {
     return {
+      isArticleProcessing: true,
       subComment: '',
       comment: {
         content: '',
@@ -424,7 +441,11 @@ export default {
     let that = this;
     window.onresize = function () {
       that.onWindowScroll();
-    }
+    };
+    let timer = setInterval(function () {
+      that.isArticleProcessing = false;
+      clearInterval(timer);
+    }, 1000);
   },
   beforeDestroy() {
     window.removeEventListener('scroll', this.onWindowScroll);
@@ -433,6 +454,83 @@ export default {
 </script>
 
 <style>
+.article-loading-part {
+  margin-top: 20px;
+}
+
+.article-loading-part .loading-title {
+  width: 200px;
+  height: 24px;
+  background-color: #eaeaea;
+}
+
+.article-loading-part .loading-content {
+  margin-left: 10px;
+  margin-top: 10px;
+  width: 600px;
+}
+
+.article-loading-part .content-loading {
+  padding: 10px;
+  background: #f3f3f3;
+  margin-top: 5px;
+}
+
+.article-loading-part .loading-text {
+  width: 100%;
+  height: 16px;
+  margin: 0 0 10px;
+  background-color: #eaeaea;
+  -webkit-animation: loading 1s ease-in-out infinite;
+  animation: loading 1s ease-in-out infinite;
+}
+
+@keyframes loading {
+  0% {
+    width: 40%;
+  }
+
+  50% {
+    width: 100%;
+  }
+  100% {
+    width: 40%;
+  }
+}
+
+.article-loading-part .animation-delay {
+  -webkit-animation: loading 1s ease-in-out -.5s infinite;
+  animation: loading 1s ease-in-out -.5s infinite;
+}
+
+.article-loading-part .animation-delay-second {
+  -webkit-animation: loading 1s ease-in-out -.3s infinite;
+  animation: loading 1s ease-in-out -.3s infinite;
+}
+
+.article-loading-part .loading-info {
+  display: inline-block;
+  width: 100%;
+  height: 30px;
+}
+
+.article-loading-part .loading-nickname {
+  width: 100px;
+  margin-left: 50px;
+  height: 20px;
+  background: #eaeaea;
+}
+
+.article-loading-part .loading-avatar {
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  background-color: #eaeaea;
+  margin-left: 10px;
+  float: left;
+}
+
+
 .sub-comment-btn {
   line-height: 54px;
   margin-left: 10px;

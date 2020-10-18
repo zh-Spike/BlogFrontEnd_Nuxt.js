@@ -57,6 +57,10 @@
           <span :class="$store.state.currentActivityTab==='index'?'header-title-activity':''">
             <i class="sob_blog sobhome"></i> 首页</span>
         </NuxtLink>
+        <NuxtLink to="/reservation">
+          <span :class="$store.state.currentActivityTab==='reservation'?'header-title-activity':''">
+            <i class="el-icon-data-analysis"></i> 预约</span>
+        </NuxtLink>
         <NuxtLink to="/about">
           <span :class="$store.state.currentActivityTab==='about'?'header-title-activity':''">
             <i class="sob_blog sobabout_line"></i> 关于</span>
