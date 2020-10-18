@@ -173,7 +173,31 @@ export const deleteAppointment = (deleteArticleId) => {
     return http.requestDelete(baseUrl + '/portal/appointment/' + deleteArticleId);
   }
 }
-// 添加预约
+
 export const postAppointment = (appointment) => {
   return http.requestPost('/portal/appointment', appointment);
+}
+
+export const updateAppointment = (appointmentId, appointment) => {
+  if (process.client) {
+    return http.requestPut('/portal/appointment/update/' + appointmentId, appointment);
+  } else {
+    return http.requestPut(baseUrl + '/portal/appointment/update/' + appointmentId, appointment);
+  }
+}
+// 获取签到列表
+export const signIn = (sign) => {
+  return http.requestPost('/portal/sign',sign);
 };
+// 管理签到
+export const signOut = (signId) => {
+  return http.requestPut('/portal/sign/' + signId);
+};
+
+export const getSignList = () => {
+  if (process.client) {
+    return http.requestGet('/portal/sign/list');
+  } else {
+    return http.requestGet(baseUrl + '/portal/sign/list' );
+  }
+}

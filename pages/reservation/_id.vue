@@ -27,12 +27,12 @@
                 <el-table-column
                   prop="labName"
                   label="实验室名称"
-                  width="200">
+                  width="180">
                 </el-table-column>
                 <el-table-column
                   prop="labAvailable"
                   label="可用容量"
-                  width="100">
+                  width="80">
                 </el-table-column>
               </el-table>
             </div>
@@ -51,16 +51,16 @@
                 <el-table-column
                   prop="labName"
                   label="审批实验室"
-                  width="200">
+                  width="180">
                 </el-table-column>
                 <el-table-column
                   prop="appointmentNumber"
                   label="预约人数"
-                  width="100">
+                  width="80">
                 </el-table-column>
                 <el-table-column
                   label="状态"
-                  width="150">
+                  width="120">
                   <template slot-scope="scope">
                     <div v-if="scope.row.state === '0'">
                       <el-tag type="danger">拒绝</el-tag>
@@ -84,19 +84,108 @@
                 </el-table-column>
                 <el-table-column
                   label="操作"
-                  width="100">
+                  width="220">
                   <template slot-scope="scope">
-                    <el-button type="danger" v-if="scope.row.state === '1'" size="mini"
-                               @click="deleteItem(scope.row)">删除
+                    <el-button type="primary" size="mini" @click="doSignIn(scope.row)" v-if="scope.row.isUsed!=='1'">
+                      签到
                     </el-button>
-                    <el-button type="danger" v-if="scope.row.state !== '1'" size="mini"
-                               @click="deleteItem(scope.row)" disabled>删除
+                    <el-button disabled type="primary" size="mini" @click="doSignIn(scope.row)" v-if="scope.row.isUsed==='1'">
+                      签到
+                    </el-button>
+                    <el-button type="info" size="mini" @click="edit(scope.row)" v-if="scope.row.state==='1'">
+                      修改
+                    </el-button>
+                    <el-button disabled type="info" size="mini" @click="edit(scope.row)" v-if="scope.row.state!=='1'">
+                      修改
+                    </el-button>
+                    <el-button type="danger"  size="mini"
+                               @click="deleteItem(scope.row)">删除
                     </el-button>
                   </template>
                 </el-table-column>
               </el-table>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+    <div class="reservation-bottom" v-show="!isArticleProcessing">
+      <div class="sign-box">
+        <div class="sign-list-box">
+          <el-table
+            v-loading="loading"
+            :data="signs"
+            style="width: 100%">
+            <el-table-column
+              fixed
+              prop="appointmentId"
+              label="预约ID"
+              width="200">
+            </el-table-column>
+            <el-table-column
+              prop="labName"
+              label="实验室"
+              width="150">
+            </el-table-column>
+            <el-table-column
+              label="用户"
+              width="200">
+              <template slot-scope="scope">
+                <a href="#" class="article-user-avatar clearfix">
+                  <el-avatar :src="scope.row.userAvatar"></el-avatar>
+                  <span class="article-user-name">{{ scope.row.userName }}</span>
+                </a>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="状态">
+              <template slot-scope="scope">
+                <div v-if="scope.row.state === '0'">
+                  <el-tag type="info">未激活</el-tag>
+                </div>
+                <div v-if="scope.row.state === '1'">
+                  <el-tag type="primary">已签到</el-tag>
+                </div>
+                <div v-if="scope.row.state === '2'">
+                  <el-tag type="danger">签退</el-tag>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="number"
+              label="预约人数">
+            </el-table-column>
+            <el-table-column
+              prop="updateTime"
+              label="更新日期"
+              width="200">
+              <template slot-scope="scope">
+						<span v-text="formatDate(scope.row.createTime)">
+						</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              fixed="right"
+              label="操作"
+              width="200">
+              <template slot-scope="scope">
+                <el-button type="primary" v-if="scope.row.state === '0'" size="medium"
+                           @click="doSignIn(scope.row)">
+                  签到
+                </el-button>
+                <el-button type="primary" v-if="scope.row.state !== '0'" size="medium"
+                           @click="doSignIn(scope.row)"
+                           disabled>签到
+                </el-button>
+                <el-button type="danger" v-if="scope.row.state === '1'" size="medium"
+                           @click="doSignOut(scope.row)">签退
+                </el-button>
+                <el-button type="danger" v-if="scope.row.state !== '1'" size="medium"
+                           @click="doSignOut(scope.row)" disabled>签退
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
         </div>
       </div>
     </div>
@@ -249,17 +338,26 @@ export default {
     return {
       isArticleProcessing: true,
       target: 'userInfo',
+      isLoading: false,
+      loading: false,
       editorCommitText: '添加',
       editorDialogShow: false,
       editTitle: '新增预约',
       appointments: [],
       labs: [],
+      signs: [],
       deleteMessage: '',
       deleteDialogShow: false,
       user: {
         id: '',
         userName: '',
         sign: ''
+      },
+      sign: {
+        id: '',
+        isUsed: '',
+        labId: '',
+        appointmentId: ''
       },
       lab: {
         id: '',
@@ -288,6 +386,16 @@ export default {
     }
   },
   methods: {
+    listSigns() {
+      this.loading = true;
+      api.getSignList().then(result => {
+        // console.log(result);
+        this.loading = false;
+        if (result.code === api.success_code) {
+          this.signs = result.data;
+        }
+      });
+    },
     checkLogin() {
       api.checkToken().then(result => {
         // console.log(result);
@@ -327,6 +435,8 @@ export default {
         this.showWarning('时间不要搞错┗|｀O′|┛ 嗷~~');
         return;
       }
+      // console.log(this.appointment.id);
+      // console.log(this.appointment);
       if (this.appointment.id === '') {
         // 如果没有ID的就是添加
         api.postAppointment(this.appointment).then(result => {
@@ -341,11 +451,67 @@ export default {
             this.listAppointments();
             // 重置数据
             this.resetAppointment();
-          } else {
-            this.showWarning(result.message);
           }
+          this.showWarning(result.message);
         });
+      } else {
+        // console.log(this.appointment);
+        api.updateAppointment(this.appointment.id, this.appointment).then(result => {
+          if (result.code === api.success_code) {
+            this.$message.success(result.message);
+            this.editorDialogShow = false;
+            this.listAppointments();
+            this.resetAppointment();
+          } else {
+            this.$message.error(result.message);
+          }
+        })
       }
+    },
+    resetSign() {
+      this.sign = '';
+    },
+    doSignIn(item) {
+      this.sign.appointmentId = item.id;
+      this.sign.labId = item.labId;
+      api.signIn(this.sign).then(result => {
+        if (result.code === api.success_code) {
+          this.$message.success(result.message);
+          this.listAppointments();
+          this.listSigns();
+          this.resetSign();
+        } else {
+          this.$message.error(result.message);
+        }
+      })
+    },
+    doSignOut(item) {
+      this.sign.id = item.id;
+      // console.log(this.sign.id);
+      api.signOut(this.sign.id).then(result => {
+        if (result.code === api.success_code) {
+          this.$message.success(result.message);
+          this.listAppointments();
+          this.listSigns();
+          this.resetSign();
+        } else {
+          this.$message.error(result.message);
+        }
+      })
+    },
+    edit(item) {
+      // 赋值 先请求单个数据 再显示 数据回显
+      this.appointment.id = item.id;
+      // 显示dialog
+      // console.log(this.currentRow);
+      this.appointment.labId = item.labId;
+      this.appointment.appointmentNumber = item.appointmentNumber;
+      this.appointment.startTime = item.startTime;
+      this.appointment.endTime = item.endTime;
+      // console.log(item);
+      this.editorDialogShow = true;
+      this.editorCommitText = '修改信息';
+      this.editTitle = '编辑预约申请';
     },
     deleteItem(item) {
       // 不是马上删除 弹出确认方框
@@ -425,6 +591,7 @@ export default {
   mounted() {
     this.$store.commit("setCurrentActivityTab", "reservation");
     this.listAppointments();
+    this.listSigns();
     let that = this;
     window.onresize = function () {
       that.onWindowScroll();
@@ -438,11 +605,17 @@ export default {
 </script>
 
 <style>
-.reservation-header .header-left{
-  padding-right: 20px;
-  height: 500px;
-  border-right:#999999 solid 1px;
+.reservation-header .header-left {
+  margin-left: 10px;
+  margin-bottom: 10px;
+  border-right: #999999 solid 1px;
+  margin-top: 20px;
 }
+
+.reservation-header .header-right {
+  margin-top: 20px;
+}
+
 .article-loading-part {
   margin-top: 20px;
 }
@@ -530,7 +703,7 @@ export default {
   background: #fff;
   margin-top: 20px;
   margin-bottom: 20px;
-  height: 500px;
+  height: 600px;
   overflow: auto;
 }
 
@@ -539,5 +712,21 @@ export default {
   color: #999999;
   margin-bottom: 10px;
   font-weight: 600;
+}
+
+.article-user-name {
+  margin-left: 10px;
+  font-weight: 600;
+  color: #222222;
+}
+
+.article-user-avatar {
+  display: block;
+}
+
+.article-user-avatar span {
+  display: block;
+  line-height: 40px;
+  float: left;
 }
 </style>
