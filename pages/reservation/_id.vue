@@ -482,7 +482,7 @@ export default {
           this.$message.success(result.message);
           this.listAppointments();
           this.listSigns();
-          this.resetSign();
+          // this.resetSign();
         } else {
           this.$message.error(result.message);
         }
@@ -496,7 +496,7 @@ export default {
           this.$message.success(result.message);
           this.listAppointments();
           this.listSigns();
-          this.resetSign();
+          // this.resetSign();
         } else {
           this.$message.error(result.message);
         }
