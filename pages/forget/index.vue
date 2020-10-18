@@ -56,6 +56,23 @@ import * as api from "@/api/api";
 import {hex_md5} from "@/utils/md5";
 
 export default {
+  head() {
+    return {
+      title: 'zh-spike系统-找回密码',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'zh-spike系统-找回密码'
+        },
+        {
+          hid: 'keywords',
+          name: 'keywords',
+          content: '杭州电子科技大学, HDU, 项目, 实验室, 系统'
+        }
+      ]
+    }
+  },
   mounted() {
     this.$store.commit("setCurrentActivityTab", "index");
   },

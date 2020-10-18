@@ -66,6 +66,23 @@ import {hex_md5} from "@/utils/md5";
 import * as api from '@/api/api';
 
 export default {
+  head() {
+    return {
+      title: 'zh-spike系统-登录',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'zh-spike系统-登录页面'
+        },
+        {
+          hid: 'keywords',
+          name: 'keywords',
+          content: '杭州电子科技大学, HDU, 项目, 实验室, 系统'
+        }
+      ]
+    }
+  },
   asyncData() {
     return {
       loginInfo: {

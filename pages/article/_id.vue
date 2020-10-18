@@ -53,7 +53,7 @@
             <div class="comment-item-list">
               <div class="article-comment-item" v-for="(item,index) in commentList" :key="index">
                 <div class="article-comment-user-info">
-                  <a :href="'/user/'+item.userId">
+                  <a :href="'/userInfo/'+item.userId" target="_blank">
                     <img :src="item.userAvatar">
                     <span class="user-name">{{ item.userName }}</span>
                   </a>
@@ -179,6 +179,23 @@ import Catelog from '@/utils/headerLineHandler';
 
 let lastInputBox = null;
 export default {
+  head() {
+    return {
+      title: 'zh-spike系统-' + this.articleRes.title,
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'zh-spike系统-' + this.articleRes.summary
+        },
+        {
+          hid: 'keywords',
+          name: 'keywords',
+          content: this.labelsStr
+        }
+      ]
+    }
+  },
   data() {
     return {
       subComment: '',
@@ -206,12 +223,22 @@ export default {
     // console.log('test....');
     // console.log(params.id);
     // console.log(commentRes.data.contents);
-
+    let labels = '';
+    let labelsList = articleResult.data.labels;
+    labelsList.forEach((label, index) => {
+      labels += label;
+      if (index < labelsList.length - 1) {
+        // console.log(index);
+        labels += ',';
+      }
+    });
+    // console.log(labels);
     return {
       articleRes: articleResult.data,
       recommendArticleRes: recommendArticle.data,
       commentList: commentRes.data.contents,
       isLastPage: commentRes.data.last,
+      labelsStr: labels
     };
   },
   methods: {

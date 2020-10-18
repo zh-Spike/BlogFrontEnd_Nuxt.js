@@ -13,9 +13,15 @@
         </div>
       </div>
       <div class="left-user-self-links default-boarder-radius">
-        <span class="sob_blog sobwechat"> </span>
-        <span class="sob_blog sobbilibili-line"></span>
-        <span class="sob_blog sobgithub"> </span>
+        <a herf="https://github.com/VegetableTechnology" target="_blank">
+          <span class="sob_blog sobwechat"> </span>
+        </a>
+        <a href="https://github.com/zh-Spike" target="_blank">
+          <span class="sob_blog sobgithub "></span>
+        </a>
+        <a href="http://www.hdu.edu.cn/" target="_blank">
+          <span class="sob_blog sobbilibili-line"> </span>
+        </a>
       </div>
       <div class="left-categories-box ">
         <div
@@ -194,6 +200,23 @@
 import * as api from '@/api/api';
 
 export default {
+  head(){
+    return{
+      title:'zh-spike系统',
+      meta:[
+        {
+          hid:'description',
+          name:'description',
+          content:'zh-spike系统,这是一个HDU学生开发的系统'
+        },
+        {
+          hid:'keywords',
+          name:'keywords',
+          content:'杭州电子科技大学, HDU, 项目, 实验室, 系统'
+        }
+      ]
+    }
+  },
   data() {
     return {
       appointments: [],
@@ -590,7 +613,7 @@ export default {
 }
 
 .left-user-self-links span:hover {
-  color: #909090;
+  color: #409EFF;
 }
 
 .left-user-self-links {

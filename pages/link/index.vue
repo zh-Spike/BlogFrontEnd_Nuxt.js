@@ -17,6 +17,23 @@
 import * as api from '@/api/api';
 
 export default {
+  head() {
+    return {
+      title: 'zh-spike系统-友情链接',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'zh-spike系统-友情链接'
+        },
+        {
+          hid: 'keywords',
+          name: 'keywords',
+          content: '杭州电子科技大学, HDU, 项目, 实验室, 系统'
+        }
+      ]
+    }
+  },
   mounted() {
     this.$store.commit("setCurrentActivityTab", "link");
   },

@@ -172,7 +172,7 @@ export default {
 }
 
 .header-title-activity {
-  color: #A612FF !important;
+  color: #409EFF !important;
 }
 
 h1 {

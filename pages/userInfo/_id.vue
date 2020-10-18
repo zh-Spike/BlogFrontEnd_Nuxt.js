@@ -57,6 +57,23 @@
 import * as api from '@/api/api';
 
 export default {
+  head() {
+    return {
+      title: 'zh-spike系统-' + this.userInfo.userName + '的用户中心',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'zh-spike系统, 个人用户中心'
+        },
+        {
+          hid: 'keywords',
+          name: 'keywords',
+          content: '杭州电子科技大学, HDU, 项目, 实验室, 系统'
+        }
+      ]
+    }
+  },
   asyncData(context) {
     let userId = context.params.id;
     return api.getUserInfo(userId).then(result => {

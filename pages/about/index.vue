@@ -87,6 +87,23 @@
 
 <script>
 export default {
+  head() {
+    return {
+      title: 'zh-spike系统-关于',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'zh-spike系统-关于页面'
+        },
+        {
+          hid: 'keywords',
+          name: 'keywords',
+          content: '杭州电子科技大学, HDU, 项目, 实验室, 系统'
+        }
+      ]
+    }
+  },
   data() {
     return {
       target: 'about',

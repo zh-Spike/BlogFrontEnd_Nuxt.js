@@ -119,6 +119,23 @@
 import * as api from '@/api/api';
 
 export default {
+  head() {
+    return {
+      title: 'zh-spike系统-搜索',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'zh-spike系统-搜索页面'
+        },
+        {
+          hid: 'keywords',
+          name: 'keywords',
+          content: '杭州电子科技大学, HDU, 项目, 实验室, 系统'
+        }
+      ]
+    }
+  },
   async asyncData({query}) {
     // console.log(query);
     let categoryId = query.categoryId ? query.categoryId : '';
