@@ -18,7 +18,7 @@
     <div class="reservation-header" v-show="!isArticleProcessing">
       <div class="header-left float-left">
         <div class="right-card">
-          <div class="card-title">
+          <div class="header-card-title">
             当前可用实验室
             <div class="lab-box">
               <el-table
@@ -41,7 +41,7 @@
       </div>
       <div class="header-right float-right">
         <div class="right-card">
-          <div class="card-title">
+          <div class="header-card-title">
             时间管理
             <div class="sign-box">
               <el-table
@@ -110,6 +110,9 @@
       </div>
     </div>
     <div class="reservation-bottom" v-show="!isArticleProcessing">
+      <div class="bottom-header ">
+        签到中心
+      </div>
       <div class="sign-box">
         <div class="sign-list-box">
           <el-table
@@ -608,7 +611,7 @@ export default {
 .reservation-header .header-left {
   margin-left: 10px;
   margin-bottom: 10px;
-  border-right: #999999 solid 1px;
+  /*border-right: #999999 solid 1px;*/
   margin-top: 20px;
 }
 
@@ -703,13 +706,13 @@ export default {
   background: #fff;
   margin-top: 20px;
   margin-bottom: 20px;
-  height: 600px;
+  /*height: 600px;*/
   overflow: auto;
 }
 
-.card-title {
-  font-size: 14px;
-  color: #999999;
+.header-card-title {
+  font-size: 20px;
+  color: #409EFF;
   margin-bottom: 10px;
   font-weight: 600;
 }
@@ -728,5 +731,41 @@ export default {
   display: block;
   line-height: 40px;
   float: left;
+}
+
+.reservation-bottom {
+  width: 1140px;
+  background: #fff;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  /*height: 400px;*/
+  overflow: auto;
+}
+
+.bottom-header {
+  font-size: 20px;
+  color: #409EFF;
+  margin-bottom: 10px;
+  font-weight: 600;
+  margin-top: 20px;
+  margin-left: 20px;
+}
+.sign-box .el-table{
+  font-size: 14px;
+}
+.user-list-box {
+  padding: 20px;
+}
+
+.reset-tips-text {
+  margin-left: 15px;
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.user-list-page-navigation-bar {
+  margin-right: 50px;
+  float: right;
 }
 </style>

@@ -14,7 +14,7 @@
       <div class="logo-box float-left">
         <div class="logo">
           <a href="/">
-            <h1>博客</h1>
+            <h1>实验室管理系统主页</h1>
           </a>
         </div>
       </div>
