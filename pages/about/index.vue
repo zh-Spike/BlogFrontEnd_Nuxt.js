@@ -17,7 +17,7 @@
         <p>
           zh-spike HDU通信学生
           VegetableTechnology
-          摊牌了 有点好
+          蔬菜科技
         </p>
       </div>
       <div class="about-item">
@@ -25,14 +25,12 @@
           我们的使命
         </h1>
         <p>
-          恰个饭
-          You’ve been added to the VegetableTechnology organization!
-          Here are some quick tips for a first-time organization member.
-
-          Use the switch context button in the upper left corner of this page to switch between your personal context
-          (zh-Spike) and organizations you are a member of.
-          After you switch contexts you’ll see an organization-focused dashboard that lists out organization
-          repositories and activities.
+          杭州电子科技大学是一所电子信息特色突出，经管学科优势明显，工、理、经、管、文、法、艺等多学科相互渗透的教学研究型大学。
+          学校始创于1956年，初名杭州航空工业财经学校，而后历经杭州航空工业学校、浙江电机专科学校、浙江机械工业学校、杭州无线电工业管理学校、
+          杭州无线电工业学校等时期，1980年经国务院批准建立杭州电子工业学院，2003年原杭州出版学校整体并入，2004年更名为杭州电子科技大学。
+          学校先后隶属于第二机械工业部、第四机械工业部、电子工业部、信息产业部等中央部委，2000年实行浙江省与信息产业部共建、以浙江省管理为主的办学管理体制，
+          2007年成为浙江省与国防科学技术工业委员会共建高校，2015年被列为浙江省重点建设高校。
+          学校坚持立足浙江、依托行业、面向世界、服务社会、支持国防，秉承“团结勤奋、求实创新”的优良传统，弘扬“笃学力行、守正求新”的校训精神，形成了鲜明的办学特色。
         </p>
       </div>
       <div class="about-item">
@@ -40,14 +38,8 @@
           我们的愿景
         </h1>
         <p>
-          找个java厂上班
-
-          N皇后 II 384 81.8% 困难
-          两数之和 7152 49.7% 简单
-          外观数列 1455 56.6% 简单
-          移动零 1418 62.5% 简单
-          环形链表 1417 50.3% 简单
-          买卖股票的最佳时机 II 1188 63.6% 简单
+          当前，面对新的发展机遇和挑战，杭州电子科技大学将坚持自身办学特色，服务国家和社会重大需求，以改革创新、追求卓越的精神，加快推进内涵式发展，
+          着力提高学校综合实力和核心竞争力，大力培养高素质人才，推动科学技术发展和经济社会发展，努力建设特色鲜明、国内一流的高水平研究教学型大学。
         </p>
       </div>
       <div class="about-item">

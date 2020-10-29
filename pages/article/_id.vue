@@ -821,6 +821,10 @@ export default {
   padding: 10px;
 }
 
+.hljs {
+  background: #e9ecef !important;
+}
+
 .article-content ul {
   margin-left: 20px;
 }

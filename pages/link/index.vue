@@ -6,7 +6,7 @@
     <div class="link-list-box clear-fix">
       <div :title="item.name" class="link-item float-left" v-for="(item,index) in linksList" :key="index">
         <a :href="item.url" target="_blank"><!--ref="nofollow"-->
-          <img :src="'http://localhost:8082/portal/image/'+item.logo">
+          <img :src="'/portal/image/'+item.logo">
         </a>
       </div>
     </div>

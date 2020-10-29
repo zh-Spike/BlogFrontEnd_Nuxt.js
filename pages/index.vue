@@ -13,14 +13,14 @@
         </div>
       </div>
       <div class="left-user-self-links default-boarder-radius">
-        <a herf="https://github.com/VegetableTechnology" target="_blank">
-          <span class="sob_blog sobwechat"> </span>
+        <a href="https://github.com/VegetableTechnology" target="_blank">
+          <span class="el-icon-coffee-cup"> </span>
         </a>
         <a href="https://github.com/zh-Spike" target="_blank">
           <span class="sob_blog sobgithub "></span>
         </a>
         <a href="http://www.hdu.edu.cn/" target="_blank">
-          <span class="sob_blog sobbilibili-line"> </span>
+          <span class="el-icon-school"> </span>
         </a>
       </div>
       <div class="left-categories-box ">
@@ -90,7 +90,7 @@
           </div>
           <div class="article-right">
             <div class="article-cover float-right">
-              <img :src="'http://localhost:8082/portal/image/'+item.cover">
+              <img :src="'/portal/image/'+item.cover">
             </div>
           </div>
         </div>
@@ -123,7 +123,7 @@
           </div>
           <div class="article-right">
             <div class="article-cover float-right">
-              <img :src="'http://localhost:8082/portal/image/'+item.cover">
+              <img :src="'/portal/image/'+item.cover">
             </div>
           </div>
         </div>

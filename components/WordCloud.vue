@@ -36,7 +36,7 @@ export default {
     wordClickHandler(name, value, vm) {
       // console.log(value);
       // name就关键字 直接跳转
-      location.href = '/search?keyword' + encodeURIComponent(name);
+      location.href = '/search?keyword=' + encodeURIComponent(name);
     },
     listLabels() {
       api.getLabels(20).then(result => {

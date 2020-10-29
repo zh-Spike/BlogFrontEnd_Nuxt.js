@@ -112,7 +112,7 @@ export default {
           }
         })
       } else if (command === 'adminCenter') {
-        location.href = "http://localhost:8080/"
+        location.href = "http://mp.hdulabres.imztj.cn/"
       } else if (command === 'userInfo') {
         location.href = "/userInfo/" + this.userInfo.id;
       }
