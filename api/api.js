@@ -1,6 +1,6 @@
 import http from "@/api/http";
 
-const baseUrl = 'http://172.25.109.213:8080'
+const baseUrl = 'http://172.24.212.100:8080'
 
 export const success_code = 10000;
 export const scan_code = 60002;
@@ -11,9 +11,9 @@ export const join_in_success = 60001;
 
 export const getAdminInfo = () => {
   if (process.client) {
-    return http.requestGet('/user/user_info/771344285340532736');
+    return http.requestGet('/user/user_info/773976490013360128');
   } else {
-    return http.requestGet(baseUrl + '/user/user_info/771344285340532736');
+    return http.requestGet(baseUrl + '/user/user_info/773976490013360128');
   }
 }
 

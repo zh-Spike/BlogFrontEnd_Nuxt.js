@@ -112,7 +112,7 @@ export default {
           }
         })
       } else if (command === 'adminCenter') {
-        location.href = "http://mp.hdulabres.imztj.cn/"
+        location.href = "http://mp.hdulab.com/"
       } else if (command === 'userInfo') {
         location.href = "/userInfo/" + this.userInfo.id;
       }
@@ -293,6 +293,7 @@ body {
 
 .header-user-name {
   margin-left: 10px;
+  margin-bottom: 10px;
 }
 
 .header-user-name .el-dropdown-link {

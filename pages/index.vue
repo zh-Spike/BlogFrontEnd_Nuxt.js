@@ -6,10 +6,10 @@
           <img :src="userInfo.avatar">
         </div>
         <div class="user-name">
-          <span v-text="userInfo.userName"></span>
+          <span>杭州电子科技大学</span>
         </div>
         <div class="user-sign">
-          <span v-text="userInfo.sign"></span>
+          <span>实验室签到系统</span>
         </div>
       </div>
       <div class="left-user-self-links default-boarder-radius">
